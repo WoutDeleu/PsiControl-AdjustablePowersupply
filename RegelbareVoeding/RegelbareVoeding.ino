@@ -204,15 +204,53 @@ void testFullFunctionallity()
   delay(5000);
 }
 
+// Cmd Messenger setup and config for serial communication
+CmdMessenger cmdMessenger = CmdMessenger(Serial);
+bool led = false;
+
+enum class CommandCalls
+{
+  TOGGLE_LED = 0,
+};
+
+void attachCommandCallbacks()
+{
+  cmdMessenger.attach(onUnknownCommand);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
+}
+
+// Prints all possible commands
+void showPossibleCommands()
+{
+  Serial.println("Toggle LED");
+}
+void onUnknownCommand()
+{
+  Serial.println("This command is unknown!");
+  showPossibleCommands();
+}
+void toggleLed()
+{
+  Serial.println("Toggle Led");
+  led = !led;
+  if (led)
+    digitalWrite(14, HIGH);
+  else if (!led)
+    digitalWrite(14, LOW);
+}
+
 void setup()
 {
   Serial.begin(115200);
   setupPins();
   setupStatus();
+
+  attachCommandCallbacks();
+  led = true;
+  digitalWrite(14, HIGH);
 }
 void loop()
 {
+  feedinSerialData();
   // sos_flasher_test();
-
-  0
 }
