@@ -131,12 +131,12 @@ int dacData1Status;
 int sourceStatus;
 
 /// 2 registers - each 1 byte - in total 2 bytes
-/// The bus connection 0 status register
+/// The bus cofnection 0 status register
 int busCon0Status;
-/// The bus connection 1 status register
+/// The bus cofnection 1 status register
 int busCon1Status;
 
-/// 2 registers - each 1 byte - in total 2 bytes
+/// 2 registerf - each 1 byte - in total 2 bytes
 /// The ground connection 0 status register.
 int gndCon0Status;
 /// The ground connection 1 status register.
@@ -242,6 +242,7 @@ void toggleLed()
 void setup()
 {
   Serial.begin(115200);
+  cmdMessenger.printLfCr();
   setupPins();
   setupStatus();
 
@@ -249,8 +250,8 @@ void setup()
   led = true;
   digitalWrite(14, HIGH);
 }
+
 void loop()
 {
-  feedinSerialData();
-  // sos_flasher_test();
+  cmdMessenger.feedinSerialData();
 }

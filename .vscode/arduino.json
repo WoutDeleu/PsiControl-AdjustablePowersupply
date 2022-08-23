@@ -1,6 +1,7 @@
 {
-    "port": "COM4",
+    "port": "COM5",
     "configuration": "cpu=atmega2560",
+    "output": "./build",
     "board": "arduino:avr:mega",
     "sketch": "RegelbareVoeding\\RegelbareVoeding.ino"
 }

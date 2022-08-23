@@ -53,6 +53,15 @@ void printCompactArray(int arr[], int sizeArr)
   }
   Serial.println("}");
 }
+void printCompactArray(String arr[], int sizeArr)
+{
+  Serial.print("{");
+  for (int i = 0; i < sizeArr; i++)
+  {
+    Serial.print(arr[i]);
+  }
+  Serial.println("}");
+}
 
 void fillArrayWithZeroes(int arr[], int size)
 {
