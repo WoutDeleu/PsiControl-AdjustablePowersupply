@@ -225,7 +225,7 @@ void attachCommandCallbacks()
 {
   cmdMessenger.attach(onUnknownCommand);
   cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), toggleLed);
@@ -260,17 +260,22 @@ void toggleLed()
   else if (!led)
     digitalWrite(14, 0x0);
 }
+void setVoltageSerial()
+{
+  sos_flasher_test();
+}
 
 void setup()
 {
   Serial.begin(115200);
+  Serial1.begin(115200);
   cmdMessenger.printLfCr();
   setupPins();
   setupStatus();
 
   attachCommandCallbacks();
   led = true;
-  digitalWrite(14, 0x1);
+  digitalWrite(14, 0x0);
 }
 
 void loop()
@@ -604,34 +609,74 @@ void printSetVoltageStatus(int status0_before, int status0_after, int status1_be
 }
 void setVoltage(double voltage)
 {
+    sos_flasher_test();
+    for (int i = 0; i < (int)voltage; i++)
+    {
+        digitalWrite(14, 0x1);
+        delay(500);
+        digitalWrite(14, 0x0);
+        delay(500);
+    }
+    /*
+
     Serial.println("Set voltage to " + String(voltage));
+
     int status0_before = dacData0Status;
+
     int status1_before = dacData1Status;
+
     // After the DAC the voltage is multiplied with 3
+
     voltage /= 3.0;
+
     // make voltage positive
+
     voltage += 10.0;
+
     if (voltage >= 20)
+
     {
+
         dacData0Status = 0xFF;
+
         dacData1Status = 0xFF;
+
     }
+
     else if (voltage <= 0)
+
     {
+
         dacData0Status = 0x00;
+
         dacData1Status = 0x00;
+
     }
+
     else
+
     {
+
         unsigned int rescaledVoltage = (unsigned int)(voltage * ((double)0xFFFF / (double)20));
+
         // Serial.println("Rescaled Voltage: " + String(rescaledVoltage));
+
         dacData0Status = (int)(rescaledVoltage & 0xFF);
+
         dacData1Status = (int)((rescaledVoltage >> 8) & 0xFF);
+
     }
+
     printSetVoltageStatus(status0_before, dacData0Status, status1_before, dacData1Status);
+
     // write data
+
     writeData(Register::DACDATA0, dacData0Status, boardNumber);
+
     writeData(Register::DACDATA1, dacData1Status, boardNumber);
+
+    */
+# 363 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 }
 
 double measureVoltage(int channel)

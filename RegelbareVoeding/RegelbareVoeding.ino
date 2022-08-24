@@ -6,6 +6,7 @@
 #define INPUT_SELECTOR 0
 #define OUTPUT_SELECTOR 1
 #include <CmdMessenger.h>
+#include <SoftwareSerial.h>
 
 enum class Register
 {
@@ -206,6 +207,7 @@ void testFullFunctionallity()
 
 // Cmd Messenger setup and config for serial communication
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
+SoftwareSerial softwareSerial(41, 42);
 bool led = false;
 
 enum class CommandCalls
@@ -224,7 +226,7 @@ void attachCommandCallbacks()
 {
   cmdMessenger.attach(onUnknownCommand);
   cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), toggleLed);
@@ -259,17 +261,22 @@ void toggleLed()
   else if (!led)
     digitalWrite(14, LOW);
 }
+void setVoltageSerial()
+{
+  sos_flasher_test();
+}
 
 void setup()
 {
   Serial.begin(115200);
+  softwareSerial.begin(115200);
   cmdMessenger.printLfCr();
   setupPins();
   setupStatus();
 
   attachCommandCallbacks();
   led = true;
-  digitalWrite(14, HIGH);
+  digitalWrite(14, LOW);
 }
 
 void loop()

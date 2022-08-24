@@ -161,9 +161,11 @@ void showPossibleCommands();
 void onUnknownCommand();
 #line 253 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void toggleLed();
-#line 263 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 262 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+void setVoltageSerial();
+#line 267 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void setup();
-#line 275 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 280 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void loop();
 #line 6 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 void writeData(Register chosenReg, int data, int boardNumber);
@@ -185,9 +187,9 @@ void connectVoltageSource(bool status);
 void printSetVoltageStatus(int status0_before, int status0_after, int status1_before, int status1_after);
 #line 323 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 void setVoltage(double voltage);
-#line 355 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 365 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 double measureVoltage(int channel);
-#line 387 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 397 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 double measureCurrentUsource();
 #line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
 int formatBinaryToInt(int arr[], int arrSize);
@@ -305,7 +307,7 @@ void attachCommandCallbacks()
 {
   cmdMessenger.attach(onUnknownCommand);
   cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), toggleLed);
@@ -340,17 +342,22 @@ void toggleLed()
   else if (!led)
     digitalWrite(14, LOW);
 }
+void setVoltageSerial()
+{
+  sos_flasher_test();
+}
 
 void setup()
 {
   Serial.begin(115200);
+  Serial1.begin(115200);
   cmdMessenger.printLfCr();
   setupPins();
   setupStatus();
 
   attachCommandCallbacks();
   led = true;
-  digitalWrite(14, HIGH);
+  digitalWrite(14, LOW);
 }
 
 void loop()
@@ -683,6 +690,15 @@ void printSetVoltageStatus(int status0_before, int status0_after, int status1_be
 }
 void setVoltage(double voltage)
 {
+    sos_flasher_test();
+    for (int i = 0; i < (int)voltage; i++)
+    {
+        digitalWrite(14, HIGH);
+        delay(500);
+        digitalWrite(14, LOW);
+        delay(500);
+    }
+    /*
     Serial.println("Set voltage to " + String(voltage));
     int status0_before = dacData0Status;
     int status1_before = dacData1Status;
@@ -711,6 +727,7 @@ void setVoltage(double voltage)
     // write data
     writeData(Register::DACDATA0, dacData0Status, boardNumber);
     writeData(Register::DACDATA1, dacData1Status, boardNumber);
+    */
 }
 
 double measureVoltage(int channel)
