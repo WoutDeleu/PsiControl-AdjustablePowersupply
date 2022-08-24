@@ -212,18 +212,39 @@ bool led = false;
 enum class CommandCalls
 {
   TOGGLE_LED = 0,
+  PUT_VOLTAGE = 1,
+  CONNECT_TO_GROUND = 2,
+  CONNECT_TO_BUS = 3,
+  MEASURE_VOLTAGE = 4,
+  MEASURE_CURRENT = 5,
+  CHANGE_BOARDNUMBER = 6,
+  GET_BOARDNUMBER = 7,
 };
 
 void attachCommandCallbacks()
 {
   cmdMessenger.attach(onUnknownCommand);
   cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_CURRENT), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CHANGE_BOARDNUMBER), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), toggleLed);
 }
 
 // Prints all possible commands
 void showPossibleCommands()
 {
   Serial.println("Toggle LED");
+  Serial.println("Connect to Ground");
+  Serial.println("Connect to Bus");
+  Serial.println("Put Voltage");
+  Serial.println("Change Boardnumber");
+  Serial.println("Get Boardnumber");
+  Serial.println("Measure Current");
+  Serial.println("Measure Voltage");
 }
 void onUnknownCommand()
 {
@@ -248,8 +269,8 @@ void setup()
   setupStatus();
 
   attachCommandCallbacks();
-  led = false;
-  digitalWrite(14, 0x0);
+  led = true;
+  digitalWrite(14, 0x1);
 }
 
 void loop()
