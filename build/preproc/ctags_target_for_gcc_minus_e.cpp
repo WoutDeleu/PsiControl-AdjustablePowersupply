@@ -224,7 +224,7 @@ enum class CommandCalls
 void attachCommandCallbacks()
 {
   cmdMessenger.attach(onUnknownCommand);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), setVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), toggleLed);
@@ -253,7 +253,6 @@ void onUnknownCommand()
 }
 void toggleLed()
 {
-  Serial.println("Toggle Led");
   led = !led;
   if (led)
     digitalWrite(14, 0x1);
@@ -263,19 +262,23 @@ void toggleLed()
 void setVoltageSerial()
 {
   sos_flasher_test();
+  led = !led;
+  if (led)
+    digitalWrite(15, 0x1);
+  else if (!led)
+    digitalWrite(15, 0x0);
 }
 
 void setup()
 {
   Serial.begin(115200);
-  Serial1.begin(115200);
   cmdMessenger.printLfCr();
   setupPins();
   setupStatus();
 
   attachCommandCallbacks();
   led = true;
-  digitalWrite(14, 0x0);
+  digitalWrite(14, 0x1);
 }
 
 void loop()

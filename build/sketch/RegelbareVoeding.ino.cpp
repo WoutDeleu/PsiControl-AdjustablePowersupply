@@ -161,11 +161,11 @@ void showPossibleCommands();
 void onUnknownCommand();
 #line 253 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void toggleLed();
-#line 262 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 261 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void setVoltageSerial();
-#line 267 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 271 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void setup();
-#line 280 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 283 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void loop();
 #line 6 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 void writeData(Register chosenReg, int data, int boardNumber);
@@ -306,7 +306,7 @@ enum class CommandCalls
 void attachCommandCallbacks()
 {
   cmdMessenger.attach(onUnknownCommand);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), setVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), toggleLed);
@@ -335,7 +335,6 @@ void onUnknownCommand()
 }
 void toggleLed()
 {
-  Serial.println("Toggle Led");
   led = !led;
   if (led)
     digitalWrite(14, HIGH);
@@ -345,19 +344,23 @@ void toggleLed()
 void setVoltageSerial()
 {
   sos_flasher_test();
+  led = !led;
+  if (led)
+    digitalWrite(15, HIGH);
+  else if (!led)
+    digitalWrite(15, LOW);
 }
 
 void setup()
 {
   Serial.begin(115200);
-  Serial1.begin(115200);
   cmdMessenger.printLfCr();
   setupPins();
   setupStatus();
 
   attachCommandCallbacks();
   led = true;
-  digitalWrite(14, LOW);
+  digitalWrite(14, HIGH);
 }
 
 void loop()
