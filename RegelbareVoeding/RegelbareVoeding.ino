@@ -66,6 +66,7 @@ enum class MeasRange
   Bi120 = 12,
 };
 
+bool led = false;
 // BoardNr
 // Must be able to be changed in GUI
 int boardNumber = 0x00;
@@ -216,7 +217,7 @@ void testFullFunctionallity()
 char field_separator = ',';
 char command_separator = ';';
 CmdMessenger cmdMessenger = CmdMessenger(Serial, field_separator, command_separator);
-bool led = false;
+
 enum class CommandCalls
 {
   TOGGLE_LED = 1,
@@ -310,14 +311,14 @@ void connectToBusSerial()
 void setup()
 {
   Serial.begin(115200);
-  cmdMessenger.printLfCr();
   setupPins();
   setupStatus();
 
   attachCommandCallbacks();
+  cmdMessenger.printLfCr();
+
   led = true;
   digitalWrite(14, HIGH);
-
   for (int i = 0; i < 16; i++)
   {
     busChannelStatus[i] = false;
@@ -330,17 +331,17 @@ void loop()
 {
   // Serial.println("Hello World");
   // delay(2000);
-  // cmdMessenger.feedinSerialData();
-  int count = 0;
-  if (Serial.available() > 0)
-  {
-    // read the incoming byte:
-    incomingByte = Serial.readString();
-    incomingByte = incomingByte.substring(4);
+  cmdMessenger.feedinSerialData();
+  // // int count = 0;
+  // if (Serial.available() > 0)
+  // {
+  //   // read the incoming bytes
+  //   incomingByte = Serial.readString();
+  //   // incomingByte = incomingByte.substring(4);
 
-    // say what you got:
-    Serial.print("I received: ");
-    Serial.println(incomingByte);
-  }
-  delay(500);
+  //   // say what you got:
+  //   Serial.print("I received: ");
+  //   Serial.println(incomingByte);
+  // }
+  // delay(500);
 }

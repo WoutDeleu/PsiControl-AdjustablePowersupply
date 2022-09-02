@@ -68,6 +68,7 @@ enum class MeasRange
   Bi120 = 12,
 };
 
+bool led = false;
 // BoardNr
 // Must be able to be changed in GUI
 int boardNumber = 0x00;
@@ -156,27 +157,27 @@ bool gndChannelStatus[16];
 bool busChannelStatus[16];
 
 // ------------------  T E S T  F U N C T I O N A L I T Y ------------------
-#line 157 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 158 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void setupStatus();
-#line 187 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 188 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void testFullFunctionallity();
-#line 231 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 232 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void attachCommandCallbacks();
-#line 246 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 247 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void showPossibleCommands();
-#line 257 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 258 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void onUnknownCommand();
-#line 264 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 265 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void toggleLed();
-#line 272 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 273 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void setVoltageSerial();
-#line 286 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 287 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void connectToGroundSerial();
-#line 297 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 298 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void connectToBusSerial();
-#line 310 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 311 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void setup();
-#line 329 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 330 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void loop();
 #line 6 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 void writeData(Register chosenReg, int data, int boardNumber);
@@ -240,7 +241,7 @@ void configDataPins(int io);
 void writePins(const int pin[], int pin_size, int inputData);
 #line 66 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\PinController.ino"
 int readPins(const int pin[], int pin_size);
-#line 157 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 158 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void setupStatus()
 {
   dacData0Status = 0x00;
@@ -303,7 +304,7 @@ void testFullFunctionallity()
 char field_separator = ',';
 char command_separator = ';';
 CmdMessenger cmdMessenger = CmdMessenger(Serial, field_separator, command_separator);
-bool led = false;
+
 enum class CommandCalls
 {
   TOGGLE_LED = 1,
@@ -329,7 +330,7 @@ void attachCommandCallbacks()
 }
 // ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
 
-// ----------------------- D E F A U L T   C A L L B A C K S --------------------------------------
+// ----------------------------------- C A L L B A C K S  M E T H O D S -------------------------------------
 void showPossibleCommands()
 {
   Serial.println("Toggle LED");
@@ -392,19 +393,19 @@ void connectToBusSerial()
     connectToBus(channel, connect);
   }
 }
-// ------------------ E N D  C A L L B A C K  M E T H O D S ------------------
+// -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 
 void setup()
 {
   Serial.begin(115200);
-  cmdMessenger.printLfCr();
   setupPins();
   setupStatus();
 
   attachCommandCallbacks();
+  cmdMessenger.printLfCr();
+
   led = true;
   digitalWrite(14, HIGH);
-
   for (int i = 0; i < 16; i++)
   {
     busChannelStatus[i] = false;
@@ -417,19 +418,19 @@ void loop()
 {
   // Serial.println("Hello World");
   // delay(2000);
-  // cmdMessenger.feedinSerialData();
-  int count = 0;
-  if (Serial.available() > 0)
-  {
-    // read the incoming byte:
-    incomingByte = Serial.readString();
-    incomingByte = incomingByte.substring(4);
+  cmdMessenger.feedinSerialData();
+  // // int count = 0;
+  // if (Serial.available() > 0)
+  // {
+  //   // read the incoming bytes
+  //   incomingByte = Serial.readString();
+  //   // incomingByte = incomingByte.substring(4);
 
-    // say what you got:
-    Serial.print("I received: ");
-    Serial.println(incomingByte);
-  }
-  delay(500);
+  //   // say what you got:
+  //   Serial.print("I received: ");
+  //   Serial.println(incomingByte);
+  // }
+  // delay(500);
 }
 
 #line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
