@@ -6,6 +6,8 @@
 #define INPUT_SELECTOR 0
 #define OUTPUT_SELECTOR 1
 #include <CmdMessenger.h>
+#include <string.h>
+// #include <RemoteDebugger.h>
 
 enum class Register
 {
@@ -147,6 +149,11 @@ int measureStatus;
 /// The U/I bus status register.
 int rangeStatus = 0;
 
+/// Status of channels (connected to ground/connected to bus)
+bool gndChannelStatus[16];
+bool busChannelStatus[16];
+
+// ------------------  T E S T  F U N C T I O N A L I T Y ------------------
 void setupStatus()
 {
   dacData0Status = 0x00;
@@ -177,7 +184,6 @@ void setupStatus()
   // settling time
   delay(RELAY_OFF_SETTLING);
 }
-
 void testFullFunctionallity()
 {
   digitalWrite(14, HIGH);
@@ -203,37 +209,40 @@ void testFullFunctionallity()
   Serial.println();
   delay(5000);
 }
+// ------------------ E N D   T E S T   F U N C T I O N A L I T Y ------------------
 
+// ------------------  D E F I N E   C A L L B A C K S   +   C M D   M E S S E N G E R------------------
 // Cmd Messenger setup and config for serial communication
-CmdMessenger cmdMessenger = CmdMessenger(Serial);
+char field_separator = ',';
+char command_separator = ';';
+CmdMessenger cmdMessenger = CmdMessenger(Serial, field_separator, command_separator);
 bool led = false;
-
 enum class CommandCalls
 {
-  TOGGLE_LED = 0,
-  PUT_VOLTAGE = 1,
-  CONNECT_TO_GROUND = 2,
-  CONNECT_TO_BUS = 3,
-  MEASURE_VOLTAGE = 4,
-  MEASURE_CURRENT = 5,
-  CHANGE_BOARDNUMBER = 6,
-  GET_BOARDNUMBER = 7,
+  TOGGLE_LED = 1,
+  PUT_VOLTAGE = 2,
+  CONNECT_TO_GROUND = 3,
+  CONNECT_TO_BUS = 4,
+  MEASURE_VOLTAGE = 5,
+  MEASURE_CURRENT = 6,
+  CHANGE_BOARDNUMBER = 7,
+  GET_BOARDNUMBER = 8,
 };
-
 void attachCommandCallbacks()
 {
-  cmdMessenger.attach(onUnknownCommand);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), setVoltageSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), toggleLed);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), toggleLed);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), toggleLed);
+  cmdMessenger.attach(0, onUnknownCommand);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), connectToGroundSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), connectToBusSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_CURRENT), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CHANGE_BOARDNUMBER), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), toggleLed);
 }
+// ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
 
-// Prints all possible commands
+// ----------------------------------- C A L L B A C K S  M E T H O D S -------------------------------------
 void showPossibleCommands()
 {
   Serial.println("Toggle LED");
@@ -247,8 +256,10 @@ void showPossibleCommands()
 }
 void onUnknownCommand()
 {
-  Serial.println("This command is unknown!");
-  showPossibleCommands();
+  toggleLed();
+  delay(750);
+  toggleLed();
+  // showPossibleCommands();
 }
 void toggleLed()
 {
@@ -261,7 +272,40 @@ void toggleLed()
 void setVoltageSerial()
 {
   sos_flasher_test();
+  if (cmdMessenger.available())
+  {
+    double voltage_int = cmdMessenger.readDoubleArg();
+
+    setVoltage(voltage_int);
+  }
+  else
+  {
+    // Error....
+  }
 }
+void connectToGroundSerial()
+{
+  int channel;
+  bool connect;
+  while (cmdMessenger.available())
+  {
+    channel = cmdMessenger.readInt16Arg();
+    connect = cmdMessenger.readBoolArg();
+    connectToGround(channel, connect);
+  }
+}
+void connectToBusSerial()
+{
+  int channel;
+  bool connect;
+  while (cmdMessenger.available())
+  {
+    channel = cmdMessenger.readInt16Arg();
+    connect = cmdMessenger.readBoolArg();
+    connectToBus(channel, connect);
+  }
+}
+// -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 
 void setup()
 {
@@ -273,9 +317,30 @@ void setup()
   attachCommandCallbacks();
   led = true;
   digitalWrite(14, HIGH);
+
+  for (int i = 0; i < 16; i++)
+  {
+    busChannelStatus[i] = false;
+    gndChannelStatus[i] = false;
+  }
 }
 
+String incomingByte = "";
 void loop()
 {
-  cmdMessenger.feedinSerialData();
+  // Serial.println("Hello World");
+  // delay(2000);
+  // cmdMessenger.feedinSerialData();
+  int count = 0;
+  if (Serial.available() > 0)
+  {
+    // read the incoming byte:
+    incomingByte = Serial.readString();
+    incomingByte = incomingByte.substring(4);
+
+    // say what you got:
+    Serial.print("I received: ");
+    Serial.println(incomingByte);
+  }
+  delay(500);
 }

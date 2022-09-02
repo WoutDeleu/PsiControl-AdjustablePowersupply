@@ -8,6 +8,8 @@
 #define INPUT_SELECTOR 0
 #define OUTPUT_SELECTOR 1
 #include <CmdMessenger.h>
+#include <string.h>
+// #include <RemoteDebugger.h>
 
 enum class Register
 {
@@ -149,23 +151,32 @@ int measureStatus;
 /// The U/I bus status register.
 int rangeStatus = 0;
 
-#line 150 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+/// Status of channels (connected to ground/connected to bus)
+bool gndChannelStatus[16];
+bool busChannelStatus[16];
+
+// ------------------  T E S T  F U N C T I O N A L I T Y ------------------
+#line 157 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void setupStatus();
-#line 181 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 187 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void testFullFunctionallity();
-#line 223 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 231 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void attachCommandCallbacks();
-#line 237 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 246 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void showPossibleCommands();
-#line 248 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 257 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void onUnknownCommand();
-#line 253 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 264 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void toggleLed();
-#line 261 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 272 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void setVoltageSerial();
-#line 271 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 286 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+void connectToGroundSerial();
+#line 297 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+void connectToBusSerial();
+#line 310 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void setup();
-#line 283 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 329 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void loop();
 #line 6 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 void writeData(Register chosenReg, int data, int boardNumber);
@@ -175,21 +186,21 @@ int readData(Register chosenReg, int boardNumber);
 void printGNDStatus(int status0_before, int status0_after, int status1_before, int status1_after);
 #line 140 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 void connectToGround(int channel, bool status);
-#line 189 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 197 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 void printBusStatus(int status0_before, int status0_after, int status1_before, int status1_after);
-#line 212 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 220 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 void connectToBus(int channel, bool status);
-#line 261 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 277 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 void printConnectVoltageStatus(int before, int after);
-#line 275 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 291 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 void connectVoltageSource(bool status);
-#line 301 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 317 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 void printSetVoltageStatus(int status0_before, int status0_after, int status1_before, int status1_after);
-#line 323 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 339 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 void setVoltage(double voltage);
-#line 365 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 379 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 double measureVoltage(int channel);
-#line 397 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 411 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 double measureCurrentUsource();
 #line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
 int formatBinaryToInt(int arr[], int arrSize);
@@ -229,7 +240,7 @@ void configDataPins(int io);
 void writePins(const int pin[], int pin_size, int inputData);
 #line 66 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\PinController.ino"
 int readPins(const int pin[], int pin_size);
-#line 150 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 157 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void setupStatus()
 {
   dacData0Status = 0x00;
@@ -260,7 +271,6 @@ void setupStatus()
   // settling time
   delay(RELAY_OFF_SETTLING);
 }
-
 void testFullFunctionallity()
 {
   digitalWrite(14, HIGH);
@@ -286,37 +296,40 @@ void testFullFunctionallity()
   Serial.println();
   delay(5000);
 }
+// ------------------ E N D   T E S T   F U N C T I O N A L I T Y ------------------
 
+// ------------------  D E F I N E   C A L L B A C K S   +   C M D   M E S S E N G E R------------------
 // Cmd Messenger setup and config for serial communication
-CmdMessenger cmdMessenger = CmdMessenger(Serial);
+char field_separator = ',';
+char command_separator = ';';
+CmdMessenger cmdMessenger = CmdMessenger(Serial, field_separator, command_separator);
 bool led = false;
-
 enum class CommandCalls
 {
-  TOGGLE_LED = 0,
-  PUT_VOLTAGE = 1,
-  CONNECT_TO_GROUND = 2,
-  CONNECT_TO_BUS = 3,
-  MEASURE_VOLTAGE = 4,
-  MEASURE_CURRENT = 5,
-  CHANGE_BOARDNUMBER = 6,
-  GET_BOARDNUMBER = 7,
+  TOGGLE_LED = 1,
+  PUT_VOLTAGE = 2,
+  CONNECT_TO_GROUND = 3,
+  CONNECT_TO_BUS = 4,
+  MEASURE_VOLTAGE = 5,
+  MEASURE_CURRENT = 6,
+  CHANGE_BOARDNUMBER = 7,
+  GET_BOARDNUMBER = 8,
 };
-
 void attachCommandCallbacks()
 {
-  cmdMessenger.attach(onUnknownCommand);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), setVoltageSerial);
+  cmdMessenger.attach(0, onUnknownCommand);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), toggleLed);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), connectToGroundSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), connectToBusSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_CURRENT), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CHANGE_BOARDNUMBER), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), toggleLed);
 }
+// ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
 
-// Prints all possible commands
+// ----------------------- D E F A U L T   C A L L B A C K S --------------------------------------
 void showPossibleCommands()
 {
   Serial.println("Toggle LED");
@@ -330,8 +343,10 @@ void showPossibleCommands()
 }
 void onUnknownCommand()
 {
-  Serial.println("This command is unknown!");
-  showPossibleCommands();
+  toggleLed();
+  delay(750);
+  toggleLed();
+  // showPossibleCommands();
 }
 void toggleLed()
 {
@@ -344,12 +359,40 @@ void toggleLed()
 void setVoltageSerial()
 {
   sos_flasher_test();
-  led = !led;
-  if (led)
-    digitalWrite(15, HIGH);
-  else if (!led)
-    digitalWrite(15, LOW);
+  if (cmdMessenger.available())
+  {
+    double voltage_int = cmdMessenger.readDoubleArg();
+
+    setVoltage(voltage_int);
+  }
+  else
+  {
+    // Error....
+  }
 }
+void connectToGroundSerial()
+{
+  int channel;
+  bool connect;
+  while (cmdMessenger.available())
+  {
+    channel = cmdMessenger.readInt16Arg();
+    connect = cmdMessenger.readBoolArg();
+    connectToGround(channel, connect);
+  }
+}
+void connectToBusSerial()
+{
+  int channel;
+  bool connect;
+  while (cmdMessenger.available())
+  {
+    channel = cmdMessenger.readInt16Arg();
+    connect = cmdMessenger.readBoolArg();
+    connectToBus(channel, connect);
+  }
+}
+// ------------------ E N D  C A L L B A C K  M E T H O D S ------------------
 
 void setup()
 {
@@ -361,11 +404,32 @@ void setup()
   attachCommandCallbacks();
   led = true;
   digitalWrite(14, HIGH);
+
+  for (int i = 0; i < 16; i++)
+  {
+    busChannelStatus[i] = false;
+    gndChannelStatus[i] = false;
+  }
 }
 
+String incomingByte = "";
 void loop()
 {
-  cmdMessenger.feedinSerialData();
+  // Serial.println("Hello World");
+  // delay(2000);
+  // cmdMessenger.feedinSerialData();
+  int count = 0;
+  if (Serial.available() > 0)
+  {
+    // read the incoming byte:
+    incomingByte = Serial.readString();
+    incomingByte = incomingByte.substring(4);
+
+    // say what you got:
+    Serial.print("I received: ");
+    Serial.println(incomingByte);
+  }
+  delay(500);
 }
 
 #line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
@@ -518,41 +582,49 @@ void connectToGround(int channel, bool status)
     // Check if no out of range errors
     if (isChannelNumberValid(channel))
     {
-        // Copy to check for changes
-        int gndCon0StatusCopy = gndCon0Status;
-        int gndCon1StatusCopy = gndCon1Status;
-        // Based if you need to close or open connection - select correct timeout
-        int switchTime = status ? RELAY_ON_SETTLING : RELAY_OFF_SETTLING;
-        // Binary operations to modify correct bit
-        // Select correct channel (e.g. channel 4 -> true? 0000 0011  -> 0000 1011)
-        // channel count originally 1-8, we want from 0-7 => -1
-        if (channel <= 8)
+        if (status != gndChannelStatus[channel - 1])
         {
-            gndCon0StatusCopy = (status) ? (gndCon0StatusCopy | (1 << (channel - 1))) : (gndCon0StatusCopy & ~(1 << (channel - 1)));
+            gndChannelStatus[channel - 1] = status;
+            // Copy to check for changes
+            int gndCon0StatusCopy = gndCon0Status;
+            int gndCon1StatusCopy = gndCon1Status;
+            // Based if you need to close or open connection - select correct timeout
+            int switchTime = status ? RELAY_ON_SETTLING : RELAY_OFF_SETTLING;
+            // Binary operations to modify correct bit
+            // Select correct channel (e.g. channel 4 -> true? 0000 0011  -> 0000 1011)
+            // channel count originally 1-8, we want from 0-7 => -1
+            if (channel <= 8)
+            {
+                gndCon0StatusCopy = (status) ? (gndCon0StatusCopy | (1 << (channel - 1))) : (gndCon0StatusCopy & ~(1 << (channel - 1)));
+            }
+            else
+            {
+                gndCon1StatusCopy = (status) ? (gndCon1StatusCopy | (1 << (channel - 9))) : (gndCon1StatusCopy & ~(1 << (channel - 9)));
+            }
+
+            // Print GND status changes
+            printGNDStatus(gndCon0Status, gndCon0StatusCopy, gndCon1Status, gndCon1StatusCopy);
+            // Check if state is changed, and from which register it changed
+            if (gndCon0StatusCopy != gndCon0Status)
+            {
+                // Status update
+                gndCon0Status = gndCon0StatusCopy;
+                // write information to pins (configure pins correctly)
+                writeData(Register::GNDCON0, gndCon0Status, boardNumber);
+                delay(switchTime);
+            }
+            if (gndCon1StatusCopy != gndCon1Status)
+            {
+                // Status update
+                gndCon1Status = gndCon1StatusCopy;
+                // write information to pins (configure pins correctly)
+                writeData(Register::GNDCON1, gndCon1Status, boardNumber);
+                delay(switchTime);
+            }
         }
         else
         {
-            gndCon1StatusCopy = (status) ? (gndCon1StatusCopy | (1 << (channel - 9))) : (gndCon1StatusCopy & ~(1 << (channel - 9)));
-        }
-
-        // Print GND status changes
-        printGNDStatus(gndCon0Status, gndCon0StatusCopy, gndCon1Status, gndCon1StatusCopy);
-        // Check if state is changed, and from which register it changed
-        if (gndCon0StatusCopy != gndCon0Status)
-        {
-            // Status update
-            gndCon0Status = gndCon0StatusCopy;
-            // write information to pins (configure pins correctly)
-            writeData(Register::GNDCON0, gndCon0Status, boardNumber);
-            delay(switchTime);
-        }
-        if (gndCon1StatusCopy != gndCon1Status)
-        {
-            // Status update
-            gndCon1Status = gndCon1StatusCopy;
-            // write information to pins (configure pins correctly)
-            writeData(Register::GNDCON1, gndCon1Status, boardNumber);
-            delay(switchTime);
+            Serial.println("State is already correct");
         }
     }
 }
@@ -590,41 +662,49 @@ void connectToBus(int channel, bool status)
     // Check if no out of range errors
     if (isChannelNumberValid(channel))
     {
-        // Copy to check for changes
-        int busCon0StatusCopy = busCon0Status;
-        int busCon1StatusCopy = busCon1Status;
-        // Based if you need to close or open connection - select correct timeout
-        int switchTime = status ? RELAY_ON_SETTLING : RELAY_OFF_SETTLING;
-        // Binary operations to modify correct bit
-        // Select correct channel (e.g. channel 4 -> true? 0000 0011  -> 0000 1011)
-        // channel count originally 1-8, we want from 0-7 => -1
-        if (channel <= 8)
+        if (status != busChannelStatus[channel - 1])
         {
-            busCon0StatusCopy = (status) ? (busCon0StatusCopy | (1 << (channel - 1))) : (busCon0StatusCopy & ~(1 << (channel - 1)));
+            busChannelStatus[channel - 1] = status;
+            // Copy to check for changes
+            int busCon0StatusCopy = busCon0Status;
+            int busCon1StatusCopy = busCon1Status;
+            // Based if you need to close or open connection - select correct timeout
+            int switchTime = status ? RELAY_ON_SETTLING : RELAY_OFF_SETTLING;
+            // Binary operations to modify correct bit
+            // Select correct channel (e.g. channel 4 -> true? 0000 0011  -> 0000 1011)
+            // channel count originally 1-8, we want from 0-7 => -1
+            if (channel <= 8)
+            {
+                busCon0StatusCopy = (status) ? (busCon0StatusCopy | (1 << (channel - 1))) : (busCon0StatusCopy & ~(1 << (channel - 1)));
+            }
+            else
+            {
+                busCon1StatusCopy = (status) ? (busCon1StatusCopy | (1 << (channel - 9))) : (busCon1StatusCopy & ~(1 << (channel - 9)));
+            }
+
+            // Print GND status changes
+            printBusStatus(busCon0Status, busCon0StatusCopy, busCon1Status, busCon1StatusCopy);
+            // Check if state is changed, and from which register it changed
+            if (busCon0StatusCopy != busCon0Status)
+            {
+                // Status update
+                busCon0Status = busCon0StatusCopy;
+                // write information to pins (configure pins correctly)
+                writeData(Register::BUSCON0, busCon0Status, boardNumber);
+                delay(switchTime);
+            }
+            if (busCon1StatusCopy != busCon1Status)
+            {
+                // Status update
+                busCon1Status = busCon1StatusCopy;
+                // write information to pins (configure pins correctly)
+                writeData(Register::BUSCON1, busCon1Status, boardNumber);
+                delay(switchTime);
+            }
         }
         else
         {
-            busCon1StatusCopy = (status) ? (busCon1StatusCopy | (1 << (channel - 9))) : (busCon1StatusCopy & ~(1 << (channel - 9)));
-        }
-
-        // Print GND status changes
-        printBusStatus(busCon0Status, busCon0StatusCopy, busCon1Status, busCon1StatusCopy);
-        // Check if state is changed, and from which register it changed
-        if (busCon0StatusCopy != busCon0Status)
-        {
-            // Status update
-            busCon0Status = busCon0StatusCopy;
-            // write information to pins (configure pins correctly)
-            writeData(Register::BUSCON0, busCon0Status, boardNumber);
-            delay(switchTime);
-        }
-        if (busCon1StatusCopy != busCon1Status)
-        {
-            // Status update
-            busCon1Status = busCon1StatusCopy;
-            // write information to pins (configure pins correctly)
-            writeData(Register::BUSCON1, busCon1Status, boardNumber);
-            delay(switchTime);
+            Serial.println("State is already correct");
         }
     }
 }
@@ -693,7 +773,6 @@ void printSetVoltageStatus(int status0_before, int status0_after, int status1_be
 }
 void setVoltage(double voltage)
 {
-    sos_flasher_test();
     for (int i = 0; i < (int)voltage; i++)
     {
         digitalWrite(14, HIGH);
@@ -701,7 +780,7 @@ void setVoltage(double voltage)
         digitalWrite(14, LOW);
         delay(500);
     }
-    /*
+
     Serial.println("Set voltage to " + String(voltage));
     int status0_before = dacData0Status;
     int status1_before = dacData1Status;
@@ -730,7 +809,6 @@ void setVoltage(double voltage)
     // write data
     writeData(Register::DACDATA0, dacData0Status, boardNumber);
     writeData(Register::DACDATA1, dacData1Status, boardNumber);
-    */
 }
 
 double measureVoltage(int channel)
