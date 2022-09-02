@@ -171,13 +171,13 @@ void onUnknownCommand();
 void toggleLed();
 #line 273 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void setVoltageSerial();
-#line 287 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 290 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void connectToGroundSerial();
-#line 298 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 301 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void connectToBusSerial();
-#line 311 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 314 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void setup();
-#line 330 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 333 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
 void loop();
 #line 6 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 void writeData(Register chosenReg, int data, int boardNumber);
@@ -199,9 +199,9 @@ void connectVoltageSource(bool status);
 void printSetVoltageStatus(int status0_before, int status0_after, int status1_before, int status1_after);
 #line 339 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 void setVoltage(double voltage);
-#line 379 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 371 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 double measureVoltage(int channel);
-#line 411 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 403 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
 double measureCurrentUsource();
 #line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
 int formatBinaryToInt(int arr[], int arrSize);
@@ -362,9 +362,12 @@ void setVoltageSerial()
   sos_flasher_test();
   if (cmdMessenger.available())
   {
-    double voltage_int = cmdMessenger.readDoubleArg();
+    int voltage_int = cmdMessenger.readInt16Arg();
+    int voltage_dec = cmdMessenger.readInt32Arg();
+    String combined = String(String(voltage_int) + "." + String(voltage_dec));
 
-    setVoltage(voltage_int);
+    double voltage = combined.toDouble();
+    setVoltage(voltage);
   }
   else
   {
@@ -405,7 +408,7 @@ void setup()
   cmdMessenger.printLfCr();
 
   led = true;
-  digitalWrite(14, HIGH);
+  digitalWrite(14, LOW);
   for (int i = 0; i < 16; i++)
   {
     busChannelStatus[i] = false;
@@ -416,21 +419,19 @@ void setup()
 String incomingByte = "";
 void loop()
 {
-  // Serial.println("Hello World");
   // delay(2000);
   cmdMessenger.feedinSerialData();
-  // // int count = 0;
   // if (Serial.available() > 0)
   // {
   //   // read the incoming bytes
-  //   incomingByte = Serial.readString();
+  //   incomingByte = Serial.read();
   //   // incomingByte = incomingByte.substring(4);
 
   //   // say what you got:
   //   Serial.print("I received: ");
   //   Serial.println(incomingByte);
   // }
-  // delay(500);
+  // // delay(1000);
 }
 
 #line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
@@ -774,14 +775,6 @@ void printSetVoltageStatus(int status0_before, int status0_after, int status1_be
 }
 void setVoltage(double voltage)
 {
-    for (int i = 0; i < (int)voltage; i++)
-    {
-        digitalWrite(14, HIGH);
-        delay(500);
-        digitalWrite(14, LOW);
-        delay(500);
-    }
-
     Serial.println("Set voltage to " + String(voltage));
     int status0_before = dacData0Status;
     int status1_before = dacData1Status;

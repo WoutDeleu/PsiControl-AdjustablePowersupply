@@ -338,14 +338,6 @@ void printSetVoltageStatus(int status0_before, int status0_after, int status1_be
 }
 void setVoltage(double voltage)
 {
-    for (int i = 0; i < (int)voltage; i++)
-    {
-        digitalWrite(14, HIGH);
-        delay(500);
-        digitalWrite(14, LOW);
-        delay(500);
-    }
-
     Serial.println("Set voltage to " + String(voltage));
     int status0_before = dacData0Status;
     int status1_before = dacData1Status;

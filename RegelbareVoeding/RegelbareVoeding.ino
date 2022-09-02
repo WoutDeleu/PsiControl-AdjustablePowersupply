@@ -275,9 +275,12 @@ void setVoltageSerial()
   sos_flasher_test();
   if (cmdMessenger.available())
   {
-    double voltage_int = cmdMessenger.readDoubleArg();
+    int voltage_int = cmdMessenger.readInt16Arg();
+    int voltage_dec = cmdMessenger.readInt32Arg();
+    String combined = String(String(voltage_int) + "." + String(voltage_dec));
 
-    setVoltage(voltage_int);
+    double voltage = combined.toDouble();
+    setVoltage(voltage);
   }
   else
   {
@@ -318,7 +321,7 @@ void setup()
   cmdMessenger.printLfCr();
 
   led = true;
-  digitalWrite(14, HIGH);
+  digitalWrite(14, LOW);
   for (int i = 0; i < 16; i++)
   {
     busChannelStatus[i] = false;
@@ -329,19 +332,17 @@ void setup()
 String incomingByte = "";
 void loop()
 {
-  // Serial.println("Hello World");
   // delay(2000);
   cmdMessenger.feedinSerialData();
-  // // int count = 0;
   // if (Serial.available() > 0)
   // {
   //   // read the incoming bytes
-  //   incomingByte = Serial.readString();
+  //   incomingByte = Serial.read();
   //   // incomingByte = incomingByte.substring(4);
 
   //   // say what you got:
   //   Serial.print("I received: ");
   //   Serial.println(incomingByte);
   // }
-  // delay(500);
+  // // delay(1000);
 }
