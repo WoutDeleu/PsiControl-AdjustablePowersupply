@@ -298,7 +298,7 @@ void connectToBusSerial()
     // Serial.println("Bus channel, connect: " + String(channel) + ", " + String(connect));
   }
 }
-void setBoardNumber()
+void setBoardNumber() 
 {
   int boardNr = cmdMessenger.readInt16Arg();
   boardNumber = boardNr;
