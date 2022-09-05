@@ -405,6 +405,7 @@ double measureCurrentUsource()
     // connect current channel and select U source.
     selectIchUsrc(true);
     double current_measured = measure(boardrange, AD1);
+    Serial.println("Measured current: " + String(current_measured));
     // disconnect current channel
     selectIchUsrc(false);
     return current_measured;

@@ -239,10 +239,10 @@ void attachCommandCallbacks()
   cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), connectToGroundSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), connectToBusSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), toggleLed);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_CURRENT), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), measureVoltageSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_CURRENT), measureCurrentSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CHANGE_BOARDNUMBER), setBoardNumber);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), getBoardNumber);
 }
 // ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
 
@@ -305,9 +305,22 @@ void setBoardNumber()
 {
   int boardNr = cmdMessenger.readInt16Arg();
   boardNumber = boardNr;
-  Serial.print("Received boardNr: ");
+  Serial.print("Succesfully changed boardNr to: ");
   Serial.println(boardNr);
 }
+void getBoardNumber()
+{
+  Serial.println("[" + String(boardNumber) + "]");
+}
+void measureVoltageSerial()
+{
+}
+void measureCurrentSerial()
+{
+  double measuredCurrent = measureCurrentUsource();
+  Serial.println("[" + String(measuredCurrent) + "]");
+}
+
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 
 void setup()
@@ -315,7 +328,7 @@ void setup()
   Serial.begin(115200);
   setupPins();
   setupStatus();
-  boardNumber = 0x00;
+  boardNumber = 9;
 
   attachCommandCallbacks();
   cmdMessenger.printLfCr();
@@ -742,6 +755,7 @@ double measureCurrentUsource()
     // connect current channel and select U source.
     selectIchUsrc(true);
     double current_measured = measure(boardrange, AD1);
+    Serial.println("Measured current: " + String(current_measured));
     // disconnect current channel
     selectIchUsrc(false);
     return current_measured;
