@@ -133,3 +133,22 @@ void sos_flasher_test()
   digitalWrite(14, LOW);
   delay(200);
 }
+
+void toggleLed()
+{
+  led = !led;
+  if (led)
+    digitalWrite(14, HIGH);
+  else if (!led)
+    digitalWrite(14, LOW);
+}
+void flasher_display_number(int number)
+{
+  for (int i = 0; i < number; i++)
+  {
+    delay(500);
+    toggleLed();
+    delay(500);
+    toggleLed();
+  }
+}

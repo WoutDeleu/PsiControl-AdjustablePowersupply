@@ -140,9 +140,9 @@ void printGNDStatus(int status0_before, int status0_after, int status1_before, i
 void connectToGround(int channel, bool status)
 {
     if (status)
-        Serial.println("Connect channel" + String(channel) + " to the ground");
+        Serial.println("Connect channel " + String(channel) + " to the ground");
     else
-        Serial.println("Disconnect channel" + String(channel) + " from the ground");
+        Serial.println("Disconnect channel " + String(channel) + " from the ground");
     // status: true to close (enable relay), false to open
     // Check if no out of range errors
     if (isChannelNumberValid(channel))
@@ -336,7 +336,7 @@ void printSetVoltageStatus(int status0_before, int status0_after, int status1_be
     printCompactArray(statusGnd, 8);
     Serial.println();
 }
-void setVoltage(double voltage)
+void setVoltage(float voltage)
 {
     Serial.println("Set voltage to " + String(voltage));
     int status0_before = dacData0Status;

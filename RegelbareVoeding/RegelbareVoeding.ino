@@ -69,7 +69,7 @@ enum class MeasRange
 bool led = false;
 // BoardNr
 // Must be able to be changed in GUI
-int boardNumber = 0x00;
+int boardNumber;
 
 // Data pins
 // const int d0_pin = 2;
@@ -231,14 +231,14 @@ enum class CommandCalls
 };
 void attachCommandCallbacks()
 {
-  cmdMessenger.attach(0, onUnknownCommand);
+  cmdMessenger.attach(onUnknownCommand);
   cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), connectToGroundSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), connectToBusSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_CURRENT), toggleLed);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::CHANGE_BOARDNUMBER), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CHANGE_BOARDNUMBER), setBoardNumber);
   cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), toggleLed);
 }
 // ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
@@ -257,57 +257,53 @@ void showPossibleCommands()
 }
 void onUnknownCommand()
 {
+  // sos_flasher_test();
   toggleLed();
   delay(750);
   toggleLed();
-  // showPossibleCommands();
-}
-void toggleLed()
-{
-  led = !led;
-  if (led)
-    digitalWrite(14, HIGH);
-  else if (!led)
-    digitalWrite(14, LOW);
 }
 void setVoltageSerial()
 {
-  sos_flasher_test();
-  if (cmdMessenger.available())
-  {
-    int voltage_int = cmdMessenger.readInt16Arg();
-    int voltage_dec = cmdMessenger.readInt32Arg();
-    String combined = String(String(voltage_int) + "." + String(voltage_dec));
+  connectVoltageSource(true);
+  int voltage_int = cmdMessenger.readInt32Arg();
+  int voltage_dec = cmdMessenger.readInt32Arg();
+  String combined = String(String(voltage_int) + "." + String(voltage_dec));
 
-    double voltage = combined.toDouble();
-    setVoltage(voltage);
-  }
-  else
-  {
-    // Error....
-  }
+  float voltage = combined.toFloat();
+  // Serial.println("Combined: " + combined);
+  // Serial.println("Voltage: " + String(voltage));
+  setVoltage(voltage);
 }
 void connectToGroundSerial()
 {
   int channel;
   bool connect;
-  while (cmdMessenger.available())
+  for (int i = 0; i < 8; i++)
   {
     channel = cmdMessenger.readInt16Arg();
     connect = cmdMessenger.readBoolArg();
     connectToGround(channel, connect);
+    // Serial.println("Ground channel, connect: " + String(channel) + ", " + String(connect));
   }
 }
 void connectToBusSerial()
 {
   int channel;
   bool connect;
-  while (cmdMessenger.available())
+  for (int i = 0; i < 8; i++)
   {
     channel = cmdMessenger.readInt16Arg();
     connect = cmdMessenger.readBoolArg();
     connectToBus(channel, connect);
+    // Serial.println("Bus channel, connect: " + String(channel) + ", " + String(connect));
   }
+}
+void setBoardNumber()
+{
+  int boardNr = cmdMessenger.readInt16Arg();
+  boardNumber = boardNr;
+  Serial.print("Received boardNr: ");
+  Serial.println(boardNr);
 }
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 
@@ -316,11 +312,12 @@ void setup()
   Serial.begin(115200);
   setupPins();
   setupStatus();
+  boardNumber = 0x00;
 
   attachCommandCallbacks();
   cmdMessenger.printLfCr();
 
-  led = true;
+  led = false;
   digitalWrite(14, LOW);
   for (int i = 0; i < 16; i++)
   {
@@ -328,21 +325,7 @@ void setup()
     gndChannelStatus[i] = false;
   }
 }
-
-String incomingByte = "";
 void loop()
 {
-  // delay(2000);
   cmdMessenger.feedinSerialData();
-  // if (Serial.available() > 0)
-  // {
-  //   // read the incoming bytes
-  //   incomingByte = Serial.read();
-  //   // incomingByte = incomingByte.substring(4);
-
-  //   // say what you got:
-  //   Serial.print("I received: ");
-  //   Serial.println(incomingByte);
-  // }
-  // // delay(1000);
 }
