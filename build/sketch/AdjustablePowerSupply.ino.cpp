@@ -163,17 +163,17 @@ bool busChannelStatus[16];
 // A test function which executes some basic funcionallities of the program
 #line 162 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void testFullFunctionallity();
-#line 207 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 208 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void attachCommandCallbacks();
-#line 223 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 224 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void showPossibleCommands();
-#line 234 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 236 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void onUnknownCommand();
 #line 241 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void setVoltageSerial();
 #line 253 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void connectToGroundSerial();
-#line 265 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 266 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void connectToBusSerial();
 #line 277 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void setBoardNumber();
@@ -183,11 +183,13 @@ void getBoardNumber();
 void measureVoltageSerial();
 #line 294 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void measureCurrentSerial();
-#line 301 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 299 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+void disconnectVoltageSerial();
+#line 306 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void setupStatus();
-#line 332 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 336 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void setup();
-#line 351 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 355 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void loop();
 #line 6 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void writeData(Register chosenReg, int data, int boardNumber);
@@ -288,7 +290,7 @@ void testFullFunctionallity()
 char field_separator = ',';
 char command_separator = ';';
 CmdMessenger cmdMessenger = CmdMessenger(Serial, field_separator, command_separator);
-
+// Defining possible commands
 enum class CommandCalls
 {
   TOGGLE_LED = 1,
@@ -301,6 +303,7 @@ enum class CommandCalls
   GET_BOARDNUMBER = 8,
   DISCONNECT_VOLTAGE = 9
 };
+// Linking command id's to correct functions
 void attachCommandCallbacks()
 {
   cmdMessenger.attach(onUnknownCommand);
@@ -328,25 +331,24 @@ void showPossibleCommands()
   Serial.println("Measure Current");
   Serial.println("Measure Voltage");
 }
+// Print Errormessage fault in communication
 void onUnknownCommand()
 {
-  // sos_flasher_test();
-  toggleLed();
-  delay(750);
-  toggleLed();
+  Serial.println("|Invalid command received|");
+  showPossibleCommands();
 }
 void setVoltageSerial()
 {
+  // 2 inputs from GUI, the integral part and fractional part
   int voltage_int = cmdMessenger.readInt32Arg();
-  int voltage_dec = cmdMessenger.readInt32Arg();
+  int voltage_frac = cmdMessenger.readInt32Arg();
   connectVoltageSource(true);
-  String combined = String(String(voltage_int) + "." + String(voltage_dec));
+  String combined = String(String(voltage_int) + "." + String(voltage_frac));
 
   float voltage = combined.toFloat();
-  // Serial.println("Combined: " + combined);
-  // Serial.println("Voltage: " + String(voltage));
   setVoltage(voltage);
 }
+// Connect correct serial port to the ground
 void connectToGroundSerial()
 {
   int channel;
@@ -359,6 +361,7 @@ void connectToGroundSerial()
     // Serial.println("Ground channel, connect: " + String(channel) + ", " + String(connect));
   }
 }
+// Connect correct serial port to the bus
 void connectToBusSerial()
 {
   int channel;
@@ -368,7 +371,6 @@ void connectToBusSerial()
     channel = cmdMessenger.readInt16Arg();
     connect = cmdMessenger.readBoolArg();
     connectToBus(channel, connect);
-    // Serial.println("Bus channel, connect: " + String(channel) + ", " + String(connect));
   }
 }
 void setBoardNumber()
@@ -393,11 +395,15 @@ void measureCurrentSerial()
   double measuredCurrent = measureCurrentUsource();
   Serial.println("[" + String(measuredCurrent) + "]");
 }
+void disconnectVoltageSerial()
+{
+  connectVoltageSource(false);
+}
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 
+// Set the initial register statusses in the code
 void setupStatus()
 {
-  // Set the initial register statusses in the code
   dacData0Status = 0x00;
   dacData1Status = 0x80;
   sourceStatus = 0x00;
