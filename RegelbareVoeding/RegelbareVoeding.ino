@@ -264,9 +264,9 @@ void onUnknownCommand()
 }
 void setVoltageSerial()
 {
-  connectVoltageSource(true);
   int voltage_int = cmdMessenger.readInt32Arg();
   int voltage_dec = cmdMessenger.readInt32Arg();
+  connectVoltageSource(true);
   String combined = String(String(voltage_int) + "." + String(voltage_dec));
 
   float voltage = combined.toFloat();
@@ -311,13 +311,15 @@ void getBoardNumber()
 }
 void measureVoltageSerial()
 {
+  int channel = cmdMessenger.readInt32Arg();
+  double voltage = measureVoltage(channel);
+  Serial.println("[" + String(voltage) + "]");
 }
 void measureCurrentSerial()
 {
   double measuredCurrent = measureCurrentUsource();
   Serial.println("[" + String(measuredCurrent) + "]");
 }
-
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 
 void setup()

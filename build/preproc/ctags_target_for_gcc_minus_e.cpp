@@ -267,9 +267,9 @@ void onUnknownCommand()
 }
 void setVoltageSerial()
 {
-  connectVoltageSource(true);
   int voltage_int = cmdMessenger.readInt32Arg();
   int voltage_dec = cmdMessenger.readInt32Arg();
+  connectVoltageSource(true);
   String combined = String(String(voltage_int) + "." + String(voltage_dec));
 
   float voltage = combined.toFloat();
@@ -314,13 +314,15 @@ void getBoardNumber()
 }
 void measureVoltageSerial()
 {
+  int channel = cmdMessenger.readInt32Arg();
+  double voltage = measureVoltage(channel);
+  Serial.println("[" + String(voltage) + "]");
 }
 void measureCurrentSerial()
 {
   double measuredCurrent = measureCurrentUsource();
   Serial.println("[" + String(measuredCurrent) + "]");
 }
-
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 
 void setup()
@@ -328,7 +330,7 @@ void setup()
   Serial.begin(115200);
   setupPins();
   setupStatus();
-  boardNumber = 9;
+  boardNumber = 0;
 
   attachCommandCallbacks();
   cmdMessenger.printLfCr();
@@ -572,7 +574,7 @@ void connectToBus(int channel, bool status)
     if (status)
         Serial.println("Connect channel " + String(channel) + " to the BUS");
     else
-        Serial.println("Disconnect channel " + String(channel) + " from the BUS");
+        Serial.println("Disconnect channel " + String(channel) + " from BUS");
     // status: true to connect (enable relay), false to disconnect
     // Check if no out of range errors
     if (isChannelNumberValid(channel))

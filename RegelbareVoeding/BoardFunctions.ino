@@ -222,7 +222,7 @@ void connectToBus(int channel, bool status)
     if (status)
         Serial.println("Connect channel " + String(channel) + " to the BUS");
     else
-        Serial.println("Disconnect channel " + String(channel) + " from the BUS");
+        Serial.println("Disconnect channel " + String(channel) + " from BUS");
     // status: true to connect (enable relay), false to disconnect
     // Check if no out of range errors
     if (isChannelNumberValid(channel))
