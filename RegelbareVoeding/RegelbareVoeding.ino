@@ -192,10 +192,10 @@ void testFullFunctionallity()
   connectVoltageSource(true);
   setVoltage(11);
   Serial.println("***********");
-  double current = measureCurrentUsource();
-  Serial.println("Measured current = " + String(current));
-  current = measureVoltage(1);
-  Serial.println("Measured Voltage = " + String(current));
+  double measured = measureCurrentUsource();
+  Serial.println("Measured current = " + String(measured));
+  measured = measureVoltage(1);
+  Serial.println("Measured Voltage = " + String(measured));
   Serial.println("***********");
   Serial.println();
   delay(5000);
