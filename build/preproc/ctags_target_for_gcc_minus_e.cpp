@@ -205,12 +205,14 @@ enum class CommandCalls
   MEASURE_CURRENT = 6,
   CHANGE_BOARDNUMBER = 7,
   GET_BOARDNUMBER = 8,
+  DISCONNECT_VOLTAGE = 9
 };
 void attachCommandCallbacks()
 {
   cmdMessenger.attach(onUnknownCommand);
   cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::DISCONNECT_VOLTAGE), disconnectVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), connectToGroundSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), connectToBusSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), measureVoltageSerial);
