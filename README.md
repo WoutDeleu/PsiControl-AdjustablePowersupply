@@ -5,4 +5,4 @@ The board functions by writing the correct values to the correct registers, base
 
 The main functionallities are the connection setup, measuring current and voltage, connecting channels to ground/the bus and putting a specified voltage on the bus.
 
-The GUI is included, and is based on the serial communication between the Arduino and the PC. 
+You can find the GUI in the repository https://github.com/WoutDeleu/PsiControl_GUIAdjustableVoltageSource, and is based on the serial communication between the Arduino and the PC. 
