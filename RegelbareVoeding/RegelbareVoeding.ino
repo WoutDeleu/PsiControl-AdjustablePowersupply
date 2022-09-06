@@ -66,7 +66,10 @@ enum class MeasRange
   Bi120 = 12,
 };
 
-bool led = false;
+// Led used in development stage, to show status
+int led = 14;
+bool led_status = false;
+
 // BoardNr
 // Must be able to be changed in GUI
 int boardNumber;
@@ -154,40 +157,11 @@ int rangeStatus = 0;
 bool gndChannelStatus[16];
 bool busChannelStatus[16];
 
-// ------------------  T E S T  F U N C T I O N A L I T Y ------------------
-void setupStatus()
-{
-  dacData0Status = 0x00;
-  dacData1Status = 0x80;
-  sourceStatus = 0x00;
-  busCon0Status = 0x00;
-  busCon1Status = 0x00;
-  gndCon0Status = 0x00;
-  gndCon1Status = 0x00;
-  measureStatus = 0x00;
-  rangeStatus = 0x00;
-  // The DAC is reset
-  writeData(Register::DACDATA0, dacData0Status, boardNumber);
-  writeData(Register::DACDATA1, dacData1Status, boardNumber);
-  // The SOURCE register is reset
-  writeData(Register::SOURCE, sourceStatus, boardNumber);
-  // Rhe MEASURE register is reset
-  writeData(Register::MEASURE, measureStatus, boardNumber);
-  // All relays are switched off
-  writeData(Register::BUSCON0, busCon0Status, boardNumber);
-  writeData(Register::BUSCON1, busCon1Status, boardNumber);
-  writeData(Register::GNDCON0, gndCon0Status, boardNumber);
-  writeData(Register::GNDCON1, gndCon1Status, boardNumber);
-  // The UI-bus register is reset.
-  writeData(Register::RANGE, rangeStatus, boardNumber);
-  // Read the errorflags to clear the register
-  readData(Register::ERROR_FLAGS, boardNumber);
-  // settling time
-  delay(RELAY_OFF_SETTLING);
-}
+// -------------------------------  T E S T  F U N C T I O N A L I T Y --------------------------------
+// A test function which executes some basic funcionallities of the program
 void testFullFunctionallity()
 {
-  digitalWrite(14, HIGH);
+  digitalWrite(led, HIGH);
   connectToBus(1, true);
   connectVoltageSource(true);
   setVoltage(11);
@@ -199,7 +173,7 @@ void testFullFunctionallity()
   Serial.println("***********");
   Serial.println();
   delay(5000);
-  digitalWrite(14, LOW);
+  digitalWrite(led, LOW);
   setVoltage(0);
   Serial.println("***********");
   measured = measureCurrentUsource();
@@ -212,7 +186,7 @@ void testFullFunctionallity()
 }
 // ------------------ E N D   T E S T   F U N C T I O N A L I T Y ------------------
 
-// ------------------  D E F I N E   C A L L B A C K S   +   C M D   M E S S E N G E R------------------
+// ---------------------------  S E T U P  C M D   M E S S E N G E R-----------------------------------
 // Cmd Messenger setup and config for serial communication
 char field_separator = ',';
 char command_separator = ';';
@@ -322,6 +296,37 @@ void measureCurrentSerial()
 }
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 
+void setupStatus()
+{
+  // Set the initial register statusses in the code
+  dacData0Status = 0x00;
+  dacData1Status = 0x80;
+  sourceStatus = 0x00;
+  busCon0Status = 0x00;
+  busCon1Status = 0x00;
+  gndCon0Status = 0x00;
+  gndCon1Status = 0x00;
+  measureStatus = 0x00;
+  rangeStatus = 0x00;
+  // The DAC is reset
+  writeData(Register::DACDATA0, dacData0Status, boardNumber);
+  writeData(Register::DACDATA1, dacData1Status, boardNumber);
+  // The SOURCE register is reset
+  writeData(Register::SOURCE, sourceStatus, boardNumber);
+  // Rhe MEASURE register is reset
+  writeData(Register::MEASURE, measureStatus, boardNumber);
+  // All relays are switched off
+  writeData(Register::BUSCON0, busCon0Status, boardNumber);
+  writeData(Register::BUSCON1, busCon1Status, boardNumber);
+  writeData(Register::GNDCON0, gndCon0Status, boardNumber);
+  writeData(Register::GNDCON1, gndCon1Status, boardNumber);
+  // The UI-bus register is reset.
+  writeData(Register::RANGE, rangeStatus, boardNumber);
+  // Read the errorflags to clear the register
+  readData(Register::ERROR_FLAGS, boardNumber);
+  // settling time
+  delay(RELAY_OFF_SETTLING);
+}
 void setup()
 {
   Serial.begin(115200);
@@ -332,8 +337,8 @@ void setup()
   attachCommandCallbacks();
   cmdMessenger.printLfCr();
 
-  led = false;
-  digitalWrite(14, LOW);
+  led = true;
+  digitalWrite(led, HIGH);
   for (int i = 0; i < 16; i++)
   {
     busChannelStatus[i] = false;
