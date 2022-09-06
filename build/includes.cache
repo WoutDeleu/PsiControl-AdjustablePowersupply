@@ -10,12 +10,12 @@
     "Includepath": "C:\\Users\\wdl\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.5\\variants\\mega"
   },
   {
-    "Sourcefile": "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\build\\sketch\\RegelbareVoeding.ino.cpp",
+    "Sourcefile": "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\build\\sketch\\AdjustablePowerSupply.ino.cpp",
     "Include": "CmdMessenger.h",
     "Includepath": "C:\\Users\\wdl\\Downloads\\arduino-1.8.19-windows\\arduino-1.8.19\\libraries\\CmdMessenger"
   },
   {
-    "Sourcefile": "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\build\\sketch\\RegelbareVoeding.ino.cpp",
+    "Sourcefile": "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\build\\sketch\\AdjustablePowerSupply.ino.cpp",
     "Include": "",
     "Includepath": null
   },

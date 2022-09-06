@@ -67,7 +67,7 @@ enum class MeasRange
 };
 
 // Led used in development stage, to show status
-int led = 14;
+const int led = 14;
 bool led_status = false;
 
 // BoardNr
@@ -337,8 +337,9 @@ void setup()
   attachCommandCallbacks();
   cmdMessenger.printLfCr();
 
-  led = true;
+  led_status = true;
   digitalWrite(led, HIGH);
+
   for (int i = 0; i < 16; i++)
   {
     busChannelStatus[i] = false;

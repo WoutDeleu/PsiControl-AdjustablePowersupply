@@ -3,5 +3,5 @@
     "configuration": "cpu=atmega2560",
     "output": "./build",
     "board": "arduino:avr:mega",
-    "sketch": "RegelbareVoeding\\RegelbareVoeding.ino"
+    "sketch": "AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 }

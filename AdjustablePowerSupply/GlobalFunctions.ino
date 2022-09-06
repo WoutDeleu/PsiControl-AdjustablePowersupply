@@ -134,14 +134,6 @@ void sos_flasher_test()
   delay(200);
 }
 
-void toggleLed()
-{
-  led = !led;
-  if (led)
-    digitalWrite(14, HIGH);
-  else if (!led)
-    digitalWrite(14, LOW);
-}
 void flasher_display_number(int number)
 {
   for (int i = 0; i < number; i++)
@@ -151,4 +143,13 @@ void flasher_display_number(int number)
     delay(500);
     toggleLed();
   }
+}
+
+void toggleLed()
+{
+  led_status = !led_status;
+  if (led_status)
+    digitalWrite(led, HIGH);
+  else if (!led_status)
+    digitalWrite(led, LOW);
 }

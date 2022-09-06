@@ -1,4 +1,4 @@
-# 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+# 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 
 
 
@@ -6,10 +6,10 @@
 
 
 
-# 9 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino" 2
-# 10 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino" 2
+# 9 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino" 2
+# 10 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino" 2
 
-# 10 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+# 10 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 // #include <RemoteDebugger.h>
 
 enum class Register
@@ -69,7 +69,10 @@ enum class MeasRange
   Bi120 = 12,
 };
 
-bool led = false;
+// Led used in development stage, to show status
+const int led = 14;
+bool led_status = false;
+
 // BoardNr
 // Must be able to be changed in GUI
 int boardNumber;
@@ -157,40 +160,11 @@ int rangeStatus = 0;
 bool gndChannelStatus[16];
 bool busChannelStatus[16];
 
-// ------------------  T E S T  F U N C T I O N A L I T Y ------------------
-void setupStatus()
-{
-  dacData0Status = 0x00;
-  dacData1Status = 0x80;
-  sourceStatus = 0x00;
-  busCon0Status = 0x00;
-  busCon1Status = 0x00;
-  gndCon0Status = 0x00;
-  gndCon1Status = 0x00;
-  measureStatus = 0x00;
-  rangeStatus = 0x00;
-  // The DAC is reset
-  writeData(Register::DACDATA0, dacData0Status, boardNumber);
-  writeData(Register::DACDATA1, dacData1Status, boardNumber);
-  // The SOURCE register is reset
-  writeData(Register::SOURCE, sourceStatus, boardNumber);
-  // Rhe MEASURE register is reset
-  writeData(Register::MEASURE, measureStatus, boardNumber);
-  // All relays are switched off
-  writeData(Register::BUSCON0, busCon0Status, boardNumber);
-  writeData(Register::BUSCON1, busCon1Status, boardNumber);
-  writeData(Register::GNDCON0, gndCon0Status, boardNumber);
-  writeData(Register::GNDCON1, gndCon1Status, boardNumber);
-  // The UI-bus register is reset.
-  writeData(Register::RANGE, rangeStatus, boardNumber);
-  // Read the errorflags to clear the register
-  readData(Register::ERROR_FLAGS, boardNumber);
-  // settling time
-  delay(RELAY_OFF_SETTLING);
-}
+// -------------------------------  T E S T  F U N C T I O N A L I T Y --------------------------------
+// A test function which executes some basic funcionallities of the program
 void testFullFunctionallity()
 {
-  digitalWrite(14, 0x1);
+  digitalWrite(led, 0x1);
   connectToBus(1, true);
   connectVoltageSource(true);
   setVoltage(11);
@@ -202,7 +176,7 @@ void testFullFunctionallity()
   Serial.println("***********");
   Serial.println();
   delay(5000);
-  digitalWrite(14, 0x0);
+  digitalWrite(led, 0x0);
   setVoltage(0);
   Serial.println("***********");
   measured = measureCurrentUsource();
@@ -215,7 +189,7 @@ void testFullFunctionallity()
 }
 // ------------------ E N D   T E S T   F U N C T I O N A L I T Y ------------------
 
-// ------------------  D E F I N E   C A L L B A C K S   +   C M D   M E S S E N G E R------------------
+// ---------------------------  S E T U P  C M D   M E S S E N G E R-----------------------------------
 // Cmd Messenger setup and config for serial communication
 char field_separator = ',';
 char command_separator = ';';
@@ -325,6 +299,37 @@ void measureCurrentSerial()
 }
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 
+void setupStatus()
+{
+  // Set the initial register statusses in the code
+  dacData0Status = 0x00;
+  dacData1Status = 0x80;
+  sourceStatus = 0x00;
+  busCon0Status = 0x00;
+  busCon1Status = 0x00;
+  gndCon0Status = 0x00;
+  gndCon1Status = 0x00;
+  measureStatus = 0x00;
+  rangeStatus = 0x00;
+  // The DAC is reset
+  writeData(Register::DACDATA0, dacData0Status, boardNumber);
+  writeData(Register::DACDATA1, dacData1Status, boardNumber);
+  // The SOURCE register is reset
+  writeData(Register::SOURCE, sourceStatus, boardNumber);
+  // Rhe MEASURE register is reset
+  writeData(Register::MEASURE, measureStatus, boardNumber);
+  // All relays are switched off
+  writeData(Register::BUSCON0, busCon0Status, boardNumber);
+  writeData(Register::BUSCON1, busCon1Status, boardNumber);
+  writeData(Register::GNDCON0, gndCon0Status, boardNumber);
+  writeData(Register::GNDCON1, gndCon1Status, boardNumber);
+  // The UI-bus register is reset.
+  writeData(Register::RANGE, rangeStatus, boardNumber);
+  // Read the errorflags to clear the register
+  readData(Register::ERROR_FLAGS, boardNumber);
+  // settling time
+  delay(RELAY_OFF_SETTLING);
+}
 void setup()
 {
   Serial.begin(115200);
@@ -335,8 +340,9 @@ void setup()
   attachCommandCallbacks();
   cmdMessenger.printLfCr();
 
-  led = false;
-  digitalWrite(14, 0x0);
+  led_status = true;
+  digitalWrite(led, 0x1);
+
   for (int i = 0; i < 16; i++)
   {
     busChannelStatus[i] = false;
@@ -345,13 +351,14 @@ void setup()
 }
 void loop()
 {
+  // processing incoming commands
   cmdMessenger.feedinSerialData();
 }
-# 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
-# 2 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino" 2
+# 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+# 2 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino" 2
 
 
-# 3 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+# 3 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 MeasRange DEFAULT_BOARD_RANGE = MeasRange::Bi30;
 MeasRange boardrange = DEFAULT_BOARD_RANGE;
 
@@ -762,7 +769,7 @@ double measureCurrentUsource()
     selectIchUsrc(false);
     return current_measured;
 }
-# 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
+# 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 int formatBinaryToInt(int arr[], int arrSize)
 {
   int ret = 0, weight;
@@ -899,14 +906,6 @@ void sos_flasher_test()
   delay(200);
 }
 
-void toggleLed()
-{
-  led = !led;
-  if (led)
-    digitalWrite(14, 0x1);
-  else if (!led)
-    digitalWrite(14, 0x0);
-}
 void flasher_display_number(int number)
 {
   for (int i = 0; i < number; i++)
@@ -917,7 +916,16 @@ void flasher_display_number(int number)
     toggleLed();
   }
 }
-# 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\Measure.ino"
+
+void toggleLed()
+{
+  led_status = !led_status;
+  if (led_status)
+    digitalWrite(led, 0x1);
+  else if (!led_status)
+    digitalWrite(led, 0x0);
+}
+# 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\Measure.ino"
 void selectChannel(int channel, bool status)
 {
     if (status)
@@ -1000,7 +1008,7 @@ double measure(MeasRange range, int pin)
     double measured = ((double)(range)*5 / (double)1023) * measuredValue;
     return measured;
 }
-# 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\PinController.ino"
+# 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\PinController.ino"
 void setupPins()
 {
   //  datapins are controlled by the arduino

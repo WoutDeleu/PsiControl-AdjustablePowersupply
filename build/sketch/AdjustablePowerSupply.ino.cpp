@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 
 #define SIZE_ADDRESSPINS 8
 #define SIZE_DATAPINS 8
@@ -68,7 +68,10 @@ enum class MeasRange
   Bi120 = 12,
 };
 
-bool led = false;
+// Led used in development stage, to show status
+const int led = 14;
+bool led_status = false;
+
 // BoardNr
 // Must be able to be changed in GUI
 int boardNumber;
@@ -156,135 +159,106 @@ int rangeStatus = 0;
 bool gndChannelStatus[16];
 bool busChannelStatus[16];
 
-// ------------------  T E S T  F U N C T I O N A L I T Y ------------------
-#line 158 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
-void setupStatus();
-#line 188 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+// -------------------------------  T E S T  F U N C T I O N A L I T Y --------------------------------
+// A test function which executes some basic funcionallities of the program
+#line 162 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void testFullFunctionallity();
-#line 232 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 206 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void attachCommandCallbacks();
-#line 247 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 221 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void showPossibleCommands();
-#line 258 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 232 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void onUnknownCommand();
-#line 265 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 239 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void setVoltageSerial();
-#line 277 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 251 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void connectToGroundSerial();
-#line 289 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 263 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void connectToBusSerial();
-#line 301 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 275 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void setBoardNumber();
-#line 308 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 282 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void getBoardNumber();
-#line 312 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 286 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void measureVoltageSerial();
-#line 318 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 292 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void measureCurrentSerial();
-#line 325 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 299 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+void setupStatus();
+#line 330 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void setup();
-#line 343 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
+#line 349 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void loop();
-#line 6 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 6 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void writeData(Register chosenReg, int data, int boardNumber);
-#line 60 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 60 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 int readData(Register chosenReg, int boardNumber);
-#line 117 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 117 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void printGNDStatus(int status0_before, int status0_after, int status1_before, int status1_after);
-#line 140 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 140 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void connectToGround(int channel, bool status);
-#line 197 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 197 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void printBusStatus(int status0_before, int status0_after, int status1_before, int status1_after);
-#line 220 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 220 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void connectToBus(int channel, bool status);
-#line 277 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 277 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void printConnectVoltageStatus(int before, int after);
-#line 291 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 291 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void connectVoltageSource(bool status);
-#line 317 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 317 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void printSetVoltageStatus(int status0_before, int status0_after, int status1_before, int status1_after);
-#line 339 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 339 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void setVoltage(float voltage);
-#line 371 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 371 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 double measureVoltage(int channel);
-#line 403 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 403 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 double measureCurrentUsource();
-#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
+#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 int formatBinaryToInt(int arr[], int arrSize);
-#line 11 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
+#line 11 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 void formatIntToHex(int integer, char hex[]);
-#line 15 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
+#line 15 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 void formatIntToBin(int value, int data[], int length);
-#line 27 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
+#line 27 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 void printFullArray(int arr[], int sizeArr);
-#line 37 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
+#line 37 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 void printFullArray(char arr[], int sizeArr);
-#line 47 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
+#line 47 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 void printCompactArray(int arr[], int sizeArr);
-#line 56 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
+#line 56 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 void printCompactArray(String arr[], int sizeArr);
-#line 66 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
+#line 66 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 void fillArrayWithZeroes(int arr[], int size);
-#line 74 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
+#line 74 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 int toPower(int base, int exponent);
-#line 84 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
+#line 84 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 bool isChannelNumberValid(int channel);
-#line 95 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
+#line 95 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 void sos_flasher_test();
-#line 137 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
-void toggleLed();
-#line 145 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
+#line 137 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 void flasher_display_number(int number);
-#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\Measure.ino"
+#line 148 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
+void toggleLed();
+#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\Measure.ino"
 void selectChannel(int channel, bool status);
-#line 26 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\Measure.ino"
+#line 26 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\Measure.ino"
 void selectMeasRange(MeasRange range);
-#line 52 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\Measure.ino"
+#line 52 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\Measure.ino"
 void selectIchUsrc(bool connect);
-#line 74 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\Measure.ino"
+#line 74 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\Measure.ino"
 double measure(MeasRange range, int pin);
-#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\PinController.ino"
+#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\PinController.ino"
 void setupPins();
-#line 31 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\PinController.ino"
+#line 31 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\PinController.ino"
 void configDataPins(int io);
-#line 53 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\PinController.ino"
+#line 53 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\PinController.ino"
 void writePins(const int pin[], int pin_size, int inputData);
-#line 66 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\PinController.ino"
+#line 66 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\PinController.ino"
 int readPins(const int pin[], int pin_size);
-#line 158 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\RegelbareVoeding.ino"
-void setupStatus()
-{
-  dacData0Status = 0x00;
-  dacData1Status = 0x80;
-  sourceStatus = 0x00;
-  busCon0Status = 0x00;
-  busCon1Status = 0x00;
-  gndCon0Status = 0x00;
-  gndCon1Status = 0x00;
-  measureStatus = 0x00;
-  rangeStatus = 0x00;
-  // The DAC is reset
-  writeData(Register::DACDATA0, dacData0Status, boardNumber);
-  writeData(Register::DACDATA1, dacData1Status, boardNumber);
-  // The SOURCE register is reset
-  writeData(Register::SOURCE, sourceStatus, boardNumber);
-  // Rhe MEASURE register is reset
-  writeData(Register::MEASURE, measureStatus, boardNumber);
-  // All relays are switched off
-  writeData(Register::BUSCON0, busCon0Status, boardNumber);
-  writeData(Register::BUSCON1, busCon1Status, boardNumber);
-  writeData(Register::GNDCON0, gndCon0Status, boardNumber);
-  writeData(Register::GNDCON1, gndCon1Status, boardNumber);
-  // The UI-bus register is reset.
-  writeData(Register::RANGE, rangeStatus, boardNumber);
-  // Read the errorflags to clear the register
-  readData(Register::ERROR_FLAGS, boardNumber);
-  // settling time
-  delay(RELAY_OFF_SETTLING);
-}
+#line 162 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void testFullFunctionallity()
 {
-  digitalWrite(14, HIGH);
+  digitalWrite(led, HIGH);
   connectToBus(1, true);
   connectVoltageSource(true);
   setVoltage(11);
@@ -296,7 +270,7 @@ void testFullFunctionallity()
   Serial.println("***********");
   Serial.println();
   delay(5000);
-  digitalWrite(14, LOW);
+  digitalWrite(led, LOW);
   setVoltage(0);
   Serial.println("***********");
   measured = measureCurrentUsource();
@@ -309,7 +283,7 @@ void testFullFunctionallity()
 }
 // ------------------ E N D   T E S T   F U N C T I O N A L I T Y ------------------
 
-// ------------------  D E F I N E   C A L L B A C K S   +   C M D   M E S S E N G E R------------------
+// ---------------------------  S E T U P  C M D   M E S S E N G E R-----------------------------------
 // Cmd Messenger setup and config for serial communication
 char field_separator = ',';
 char command_separator = ';';
@@ -419,6 +393,37 @@ void measureCurrentSerial()
 }
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 
+void setupStatus()
+{
+  // Set the initial register statusses in the code
+  dacData0Status = 0x00;
+  dacData1Status = 0x80;
+  sourceStatus = 0x00;
+  busCon0Status = 0x00;
+  busCon1Status = 0x00;
+  gndCon0Status = 0x00;
+  gndCon1Status = 0x00;
+  measureStatus = 0x00;
+  rangeStatus = 0x00;
+  // The DAC is reset
+  writeData(Register::DACDATA0, dacData0Status, boardNumber);
+  writeData(Register::DACDATA1, dacData1Status, boardNumber);
+  // The SOURCE register is reset
+  writeData(Register::SOURCE, sourceStatus, boardNumber);
+  // Rhe MEASURE register is reset
+  writeData(Register::MEASURE, measureStatus, boardNumber);
+  // All relays are switched off
+  writeData(Register::BUSCON0, busCon0Status, boardNumber);
+  writeData(Register::BUSCON1, busCon1Status, boardNumber);
+  writeData(Register::GNDCON0, gndCon0Status, boardNumber);
+  writeData(Register::GNDCON1, gndCon1Status, boardNumber);
+  // The UI-bus register is reset.
+  writeData(Register::RANGE, rangeStatus, boardNumber);
+  // Read the errorflags to clear the register
+  readData(Register::ERROR_FLAGS, boardNumber);
+  // settling time
+  delay(RELAY_OFF_SETTLING);
+}
 void setup()
 {
   Serial.begin(115200);
@@ -429,8 +434,9 @@ void setup()
   attachCommandCallbacks();
   cmdMessenger.printLfCr();
 
-  led = false;
-  digitalWrite(14, LOW);
+  led_status = true;
+  digitalWrite(led, HIGH);
+
   for (int i = 0; i < 16; i++)
   {
     busChannelStatus[i] = false;
@@ -439,10 +445,11 @@ void setup()
 }
 void loop()
 {
+  // processing incoming commands
   cmdMessenger.feedinSerialData();
 }
 
-#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\BoardFunctions.ino"
+#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 #include <stdlib.h>
 
 MeasRange DEFAULT_BOARD_RANGE = MeasRange::Bi30;
@@ -856,7 +863,7 @@ double measureCurrentUsource()
     return current_measured;
 }
 
-#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\GlobalFunctions.ino"
+#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 int formatBinaryToInt(int arr[], int arrSize)
 {
   int ret = 0, weight;
@@ -993,14 +1000,6 @@ void sos_flasher_test()
   delay(200);
 }
 
-void toggleLed()
-{
-  led = !led;
-  if (led)
-    digitalWrite(14, HIGH);
-  else if (!led)
-    digitalWrite(14, LOW);
-}
 void flasher_display_number(int number)
 {
   for (int i = 0; i < number; i++)
@@ -1012,7 +1011,15 @@ void flasher_display_number(int number)
   }
 }
 
-#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\Measure.ino"
+void toggleLed()
+{
+  led_status = !led_status;
+  if (led_status)
+    digitalWrite(led, HIGH);
+  else if (!led_status)
+    digitalWrite(led, LOW);
+}
+#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\Measure.ino"
 void selectChannel(int channel, bool status)
 {
     if (status)
@@ -1096,7 +1103,7 @@ double measure(MeasRange range, int pin)
     return measured;
 }
 
-#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\RegelbareVoeding\\PinController.ino"
+#line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\PinController.ino"
 void setupPins()
 {
   //  datapins are controlled by the arduino

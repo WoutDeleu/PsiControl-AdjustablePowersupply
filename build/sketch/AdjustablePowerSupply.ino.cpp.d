@@ -1,5 +1,5 @@
-c:\Users\wdl\OneDrive\ -\ Picanol\ Group\Documents\PsiControl_RegelbareVoeding_V3\build\sketch\RegelbareVoeding.ino.cpp.o: \
- c:\Users\wdl\OneDrive\ -\ Picanol\ Group\Documents\PsiControl_RegelbareVoeding_V3\build\sketch\RegelbareVoeding.ino.cpp \
+c:\Users\wdl\OneDrive\ -\ Picanol\ Group\Documents\PsiControl_RegelbareVoeding_V3\build\sketch\AdjustablePowerSupply.ino.cpp.o: \
+ c:\Users\wdl\OneDrive\ -\ Picanol\ Group\Documents\PsiControl_RegelbareVoeding_V3\build\sketch\AdjustablePowerSupply.ino.cpp \
  C:\Users\wdl\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.5\cores\arduino/Arduino.h \
  C:\Users\wdl\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.5\cores\arduino/binary.h \
  C:\Users\wdl\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.5\cores\arduino/WCharacter.h \
