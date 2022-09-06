@@ -202,10 +202,10 @@ void testFullFunctionallity()
   digitalWrite(14, LOW);
   setVoltage(0);
   Serial.println("***********");
-  current = measureCurrentUsource();
-  Serial.println("Measured current = " + String(current));
-  current = measureVoltage(1);
-  Serial.println("Measured Voltage = " + String(current));
+  measured = measureCurrentUsource();
+  Serial.println("Measured current = " + String(measured));
+  measured = measureVoltage(1);
+  Serial.println("Measured Voltage = " + String(measured));
   Serial.println("***********");
   Serial.println();
   delay(5000);
@@ -342,5 +342,6 @@ void setup()
 }
 void loop()
 {
+  // processing incoming commands
   cmdMessenger.feedinSerialData();
 }
