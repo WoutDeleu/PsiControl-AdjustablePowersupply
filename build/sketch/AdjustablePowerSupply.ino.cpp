@@ -222,45 +222,41 @@ void writeData(Register chosenReg, int data, int boardNumber);
 int readData(Register chosenReg, int boardNumber);
 #line 105 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void printGNDStatus(int status0_before, int status0_after, int status1_before, int status1_after);
-#line 128 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 129 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void connectToGround(int channel, bool status);
-#line 185 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 186 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void printBusStatus(int status0_before, int status0_after, int status1_before, int status1_after);
-#line 207 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 209 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void connectToBus(int channel, bool status);
-#line 264 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 262 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void printConnectVoltageStatus(int before, int after);
-#line 278 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 276 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void connectVoltageSource(bool status);
-#line 304 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 302 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void printSetVoltageStatus(int status0_before, int status0_after, int status1_before, int status1_after);
-#line 326 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 325 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void setVoltage(float voltage);
-#line 358 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 356 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 double measureVoltage(int channel);
-#line 390 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 388 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 double measureCurrentUsource();
 #line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 int formatBinaryToInt(int arr[], int arrSize);
 #line 11 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
-void formatIntToHex(int integer, char hex[]);
-#line 15 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 void formatIntToBin(int value, int data[], int length);
-#line 47 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
-void printCompactArray(int arr[], int sizeArr);
-#line 56 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
-void printCompactArray(String arr[], int sizeArr);
-#line 66 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
-void fillArrayWithZeroes(int arr[], int size);
-#line 74 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
+#line 22 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 int toPower(int base, int exponent);
-#line 84 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
+#line 32 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
+void printCompactArray(int arr[], int sizeArr);
+#line 41 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
+void printCompactArray(String arr[], int sizeArr);
+#line 51 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
+void fillArrayWithZeroes(int arr[], int size);
+#line 59 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 bool isChannelNumberValid(int channel);
-#line 95 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
+#line 69 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 void sos_flasher_test();
-#line 137 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
-void flasher_display_number(int number);
-#line 148 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
+#line 110 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 void toggleLed();
 #line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\Measure.ino"
 void selectChannel(int channel, bool status);
@@ -574,41 +570,42 @@ int readData(Register chosenReg, int boardNumber)
 
 void printGNDStatus(int status0_before, int status0_after, int status1_before, int status1_after)
 {
-    Serial.println("STATUS GND:");
+    Serial.println("(( \n STATUS GND UPDATE::");
     Serial.print("gndCon0Status before: ");
     int statusGnd[8];
     // Serial.print(status0_before);
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.print("gndCon0Status after: ");
+    Serial.print("=> gndCon0Status after: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
+    Serial.println();
     Serial.print("gndCon1Status before: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.print("gndCon1Status after: ");
+    Serial.print("=> gndCon1Status after: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.println();
+    Serial.println("\n ))");
 }
 void connectToGround(int channel, bool status)
 {
-    if (status)
-        Serial.println("Connect channel " + String(channel) + " to the ground");
-    else
-        Serial.println("Disconnect channel " + String(channel) + " from the ground");
     // status: true to close (enable relay), false to open
     // Check if no out of range errors
     if (isChannelNumberValid(channel))
     {
         if (status != gndChannelStatus[channel - 1])
         {
+            if (status)
+                Serial.println("##Connect channel " + String(channel) + " to the ground##");
+            else
+                Serial.println("##Disconnect channel " + String(channel) + " from the ground##");
             gndChannelStatus[channel - 1] = status;
-            // Copy to check for changes
+            // Copy to check for chanbges
             int gndCon0StatusCopy = gndCon0Status;
             int gndCon1StatusCopy = gndCon1Status;
             // Based if you need to close or open connection - select correct timeout
@@ -645,47 +642,48 @@ void connectToGround(int channel, bool status)
                 delay(switchTime);
             }
         }
-        else
-        {
-            Serial.println("State is already correct");
-        }
+    }
+    else
+    {
+        Serial.println("||ERROR: Invalid channel selection. Fault in communication where wrong format/number is chosen as channel number..." + String(channel) + "is not a valid channel number... It most be in range of  [1...16]||");
     }
 }
 
 void printBusStatus(int status0_before, int status0_after, int status1_before, int status1_after)
 {
-    Serial.println("STATUS BUS:");
+    Serial.println("(( \n STATUS BUS::");
     Serial.print("busCon0Status before: ");
     int statusGnd[8];
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.print("busCon0Status after: ");
+    Serial.print("=> busCon0Status after: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
+    Serial.println();
     Serial.print("busCon1Status before: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.print("busCon1Status after: ");
+    Serial.print("=> busCon1Status after: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.println();
+    Serial.println("\n ))");
 }
 void connectToBus(int channel, bool status)
 {
-    if (status)
-        Serial.println("Connect channel " + String(channel) + " to the BUS");
-    else
-        Serial.println("Disconnect channel " + String(channel) + " from BUS");
     // status: true to connect (enable relay), false to disconnect
     // Check if no out of range errors
     if (isChannelNumberValid(channel))
     {
         if (status != busChannelStatus[channel - 1])
         {
+            if (status)
+                Serial.println("##Connect channel " + String(channel) + " to the BUS##");
+            else
+                Serial.println("##Disconnect channel " + String(channel) + " from BUS##");
             busChannelStatus[channel - 1] = status;
             // Copy to check for changes
             int busCon0StatusCopy = busCon0Status;
@@ -724,33 +722,29 @@ void connectToBus(int channel, bool status)
                 delay(switchTime);
             }
         }
-        else
-        {
-            Serial.println("State is already correct");
-        }
     }
 }
 
 void printConnectVoltageStatus(int before, int after)
 {
     int data[8];
-    Serial.println("STATUS CONNECTING VOLTAGE SOURCE");
+    Serial.println("(( \n STATUS CONNECTING VOLTAGE SOURCE");
     Serial.print("Status voltage source before: ");
     fillArrayWithZeroes(data, 8);
     formatIntToBin(before, data, 8);
     printCompactArray(data, 8);
-    Serial.print("Status voltage source after: ");
+    Serial.print("=> Status voltage source after: ");
     fillArrayWithZeroes(data, 8);
     formatIntToBin(after, data, 8);
     printCompactArray(data, 8);
-    Serial.println();
+    Serial.println("\n ))");
 }
 void connectVoltageSource(bool status)
 {
     if (status)
-        Serial.println("Connect voltage source");
+        Serial.println("##Connect voltage source##");
     else
-        Serial.println("Disconnect voltage source");
+        Serial.println("##Disconnect voltage source##");
     int switchTime = status ? RELAY_ON_SETTLING : RELAY_OFF_SETTLING;
     int sourceStatusCopy = sourceStatus;
     if (status)
@@ -773,29 +767,30 @@ void connectVoltageSource(bool status)
 
 void printSetVoltageStatus(int status0_before, int status0_after, int status1_before, int status1_after)
 {
-    Serial.println("STATUS DATA SETVOLTAGE:");
+    Serial.println("(( \n STATUS DATA SETVOLTAGE:");
     Serial.print("data0Status before: ");
     int statusGnd[8];
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.print("data0Status after: ");
+    Serial.print("=> data0Status after: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
+    Serial.println();
     Serial.print("data1Status before: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.print("data1Status after: ");
+    Serial.print("=> data1Status after: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.println();
+    Serial.println("\n ))");
 }
 void setVoltage(float voltage)
 {
-    Serial.println("Set voltage to " + String(voltage));
+    Serial.println("##Set voltage to " + String(voltage) + "##");
     int status0_before = dacData0Status;
     int status1_before = dacData1Status;
     // After the DAC the voltage is multiplied with 3
@@ -815,7 +810,6 @@ void setVoltage(float voltage)
     else
     {
         unsigned int rescaledVoltage = (unsigned int)(voltage * ((double)0xFFFF / (double)20));
-        // Serial.println("Rescaled Voltage: " + String(rescaledVoltage));
         dacData0Status = (int)(rescaledVoltage & 0xFF);
         dacData1Status = (int)((rescaledVoltage >> 8) & 0xFF);
     }
@@ -855,14 +849,13 @@ double measureVoltage(int channel)
         return voltage_measured;
     }
     else
-        Serial.println("INVALID CHANNEL NUMBER");
+        Serial.println("||ERROR: INVALID CHANNEL NUMBER||");
 }
 double measureCurrentUsource()
 {
     // connect current channel and select U source.
     selectIchUsrc(true);
     double current_measured = measure(boardrange, AD1);
-    Serial.println("Measured current: " + String(current_measured));
     // disconnect current channel
     selectIchUsrc(false);
     return current_measured;
@@ -879,10 +872,6 @@ int formatBinaryToInt(int arr[], int arrSize)
   }
   return ret;
 }
-void formatIntToHex(int integer, char hex[])
-{
-  sprintf(hex, "%x", integer);
-}
 void formatIntToBin(int value, int data[], int length)
 {
   int i = length - 1;
@@ -894,27 +883,16 @@ void formatIntToBin(int value, int data[], int length)
     i--;
   }
 }
+int toPower(int base, int exponent)
+{
+  int ret = 1;
+  for (int i = 0; i < exponent; i++)
+  {
+    ret = ret * base;
+  }
+  return ret;
+}
 
-// void printFullArray(int arr[], int sizeArr)
-// {
-//   Serial.print("Size: " + String(sizeArr) + "\n");
-//   Serial.print("Array : {");
-//   for (int i = 0; i < sizeArr; i++)
-//   {
-//     Serial.print(String(arr[i]));
-//   }
-//   Serial.print("} ");
-// }
-// void printFullArray(char arr[], int sizeArr)
-// {
-//   Serial.print("Size: " + String(sizeArr) + "\n");
-//   Serial.print("Array : {");
-//   for (int i = 0; i < sizeArr; i++)
-//   {
-//     Serial.print(arr[i]);
-//   }
-//   Serial.print("} ");
-// }
 void printCompactArray(int arr[], int sizeArr)
 {
   Serial.print("{");
@@ -942,21 +920,10 @@ void fillArrayWithZeroes(int arr[], int size)
   }
 }
 
-int toPower(int base, int exponent)
-{
-  int ret = 1;
-  for (int i = 0; i < exponent; i++)
-  {
-    ret = ret * base;
-  }
-  return ret;
-}
-
 bool isChannelNumberValid(int channel)
 {
   if ((channel > AIO_CHANNELS) || (channel < 1))
   {
-    Serial.println("channel out of range [1...16] \n");
     return false;
   }
   else
@@ -1004,18 +971,6 @@ void sos_flasher_test()
   digitalWrite(14, LOW);
   delay(200);
 }
-
-void flasher_display_number(int number)
-{
-  for (int i = 0; i < number; i++)
-  {
-    delay(500);
-    toggleLed();
-    delay(500);
-    toggleLed();
-  }
-}
-
 void toggleLed()
 {
   led_status = !led_status;

@@ -104,41 +104,42 @@ int readData(Register chosenReg, int boardNumber)
 
 void printGNDStatus(int status0_before, int status0_after, int status1_before, int status1_after)
 {
-    Serial.println("STATUS GND:");
+    Serial.println("(( \n STATUS GND UPDATE::");
     Serial.print("gndCon0Status before: ");
     int statusGnd[8];
     // Serial.print(status0_before);
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.print("gndCon0Status after: ");
+    Serial.print("=> gndCon0Status after: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
+    Serial.println();
     Serial.print("gndCon1Status before: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.print("gndCon1Status after: ");
+    Serial.print("=> gndCon1Status after: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.println();
+    Serial.println("\n ))");
 }
 void connectToGround(int channel, bool status)
 {
-    if (status)
-        Serial.println("Connect channel " + String(channel) + " to the ground");
-    else
-        Serial.println("Disconnect channel " + String(channel) + " from the ground");
     // status: true to close (enable relay), false to open
     // Check if no out of range errors
     if (isChannelNumberValid(channel))
     {
         if (status != gndChannelStatus[channel - 1])
         {
+            if (status)
+                Serial.println("##Connect channel " + String(channel) + " to the ground##");
+            else
+                Serial.println("##Disconnect channel " + String(channel) + " from the ground##");
             gndChannelStatus[channel - 1] = status;
-            // Copy to check for changes
+            // Copy to check for chanbges
             int gndCon0StatusCopy = gndCon0Status;
             int gndCon1StatusCopy = gndCon1Status;
             // Based if you need to close or open connection - select correct timeout
@@ -175,47 +176,48 @@ void connectToGround(int channel, bool status)
                 delay(switchTime);
             }
         }
-        else
-        {
-            Serial.println("State is already correct");
-        }
+    }
+    else
+    {
+        Serial.println("||ERROR: Invalid channel selection. Fault in communication where wrong format/number is chosen as channel number..." + String(channel) + "is not a valid channel number... It most be in range of  [1...16]||");
     }
 }
 
 void printBusStatus(int status0_before, int status0_after, int status1_before, int status1_after)
 {
-    Serial.println("STATUS BUS:");
+    Serial.println("(( \n STATUS BUS::");
     Serial.print("busCon0Status before: ");
     int statusGnd[8];
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.print("busCon0Status after: ");
+    Serial.print("=> busCon0Status after: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
+    Serial.println();
     Serial.print("busCon1Status before: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.print("busCon1Status after: ");
+    Serial.print("=> busCon1Status after: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.println();
+    Serial.println("\n ))");
 }
 void connectToBus(int channel, bool status)
 {
-    if (status)
-        Serial.println("Connect channel " + String(channel) + " to the BUS");
-    else
-        Serial.println("Disconnect channel " + String(channel) + " from BUS");
     // status: true to connect (enable relay), false to disconnect
     // Check if no out of range errors
     if (isChannelNumberValid(channel))
     {
         if (status != busChannelStatus[channel - 1])
         {
+            if (status)
+                Serial.println("##Connect channel " + String(channel) + " to the BUS##");
+            else
+                Serial.println("##Disconnect channel " + String(channel) + " from BUS##");
             busChannelStatus[channel - 1] = status;
             // Copy to check for changes
             int busCon0StatusCopy = busCon0Status;
@@ -254,33 +256,29 @@ void connectToBus(int channel, bool status)
                 delay(switchTime);
             }
         }
-        else
-        {
-            Serial.println("State is already correct");
-        }
     }
 }
 
 void printConnectVoltageStatus(int before, int after)
 {
     int data[8];
-    Serial.println("STATUS CONNECTING VOLTAGE SOURCE");
+    Serial.println("(( \n STATUS CONNECTING VOLTAGE SOURCE");
     Serial.print("Status voltage source before: ");
     fillArrayWithZeroes(data, 8);
     formatIntToBin(before, data, 8);
     printCompactArray(data, 8);
-    Serial.print("Status voltage source after: ");
+    Serial.print("=> Status voltage source after: ");
     fillArrayWithZeroes(data, 8);
     formatIntToBin(after, data, 8);
     printCompactArray(data, 8);
-    Serial.println();
+    Serial.println("\n ))");
 }
 void connectVoltageSource(bool status)
 {
     if (status)
-        Serial.println("Connect voltage source");
+        Serial.println("##Connect voltage source##");
     else
-        Serial.println("Disconnect voltage source");
+        Serial.println("##Disconnect voltage source##");
     int switchTime = status ? RELAY_ON_SETTLING : RELAY_OFF_SETTLING;
     int sourceStatusCopy = sourceStatus;
     if (status)
@@ -303,29 +301,30 @@ void connectVoltageSource(bool status)
 
 void printSetVoltageStatus(int status0_before, int status0_after, int status1_before, int status1_after)
 {
-    Serial.println("STATUS DATA SETVOLTAGE:");
+    Serial.println("(( \n STATUS DATA SETVOLTAGE:");
     Serial.print("data0Status before: ");
     int statusGnd[8];
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.print("data0Status after: ");
+    Serial.print("=> data0Status after: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
+    Serial.println();
     Serial.print("data1Status before: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.print("data1Status after: ");
+    Serial.print("=> data1Status after: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.println();
+    Serial.println("\n ))");
 }
 void setVoltage(float voltage)
 {
-    Serial.println("Set voltage to " + String(voltage));
+    Serial.println("##Set voltage to " + String(voltage) + "##");
     int status0_before = dacData0Status;
     int status1_before = dacData1Status;
     // After the DAC the voltage is multiplied with 3
@@ -345,7 +344,6 @@ void setVoltage(float voltage)
     else
     {
         unsigned int rescaledVoltage = (unsigned int)(voltage * ((double)0xFFFF / (double)20));
-        // Serial.println("Rescaled Voltage: " + String(rescaledVoltage));
         dacData0Status = (int)(rescaledVoltage & 0xFF);
         dacData1Status = (int)((rescaledVoltage >> 8) & 0xFF);
     }
@@ -385,14 +383,13 @@ double measureVoltage(int channel)
         return voltage_measured;
     }
     else
-        Serial.println("INVALID CHANNEL NUMBER");
+        Serial.println("||ERROR: INVALID CHANNEL NUMBER||");
 }
 double measureCurrentUsource()
 {
     // connect current channel and select U source.
     selectIchUsrc(true);
     double current_measured = measure(boardrange, AD1);
-    Serial.println("Measured current: " + String(current_measured));
     // disconnect current channel
     selectIchUsrc(false);
     return current_measured;

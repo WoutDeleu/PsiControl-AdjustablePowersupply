@@ -8,10 +8,6 @@ int formatBinaryToInt(int arr[], int arrSize)
   }
   return ret;
 }
-void formatIntToHex(int integer, char hex[])
-{
-  sprintf(hex, "%x", integer);
-}
 void formatIntToBin(int value, int data[], int length)
 {
   int i = length - 1;
@@ -22,6 +18,15 @@ void formatIntToBin(int value, int data[], int length)
     value = value / 2;
     i--;
   }
+}
+int toPower(int base, int exponent)
+{
+  int ret = 1;
+  for (int i = 0; i < exponent; i++)
+  {
+    ret = ret * base;
+  }
+  return ret;
 }
 
 void printCompactArray(int arr[], int sizeArr)
@@ -51,21 +56,10 @@ void fillArrayWithZeroes(int arr[], int size)
   }
 }
 
-int toPower(int base, int exponent)
-{
-  int ret = 1;
-  for (int i = 0; i < exponent; i++)
-  {
-    ret = ret * base;
-  }
-  return ret;
-}
-
 bool isChannelNumberValid(int channel)
 {
   if ((channel > AIO_CHANNELS) || (channel < 1))
   {
-    Serial.println("channel out of range [1...16] \n");
     return false;
   }
   else
@@ -113,18 +107,6 @@ void sos_flasher_test()
   digitalWrite(14, LOW);
   delay(200);
 }
-
-void flasher_display_number(int number)
-{
-  for (int i = 0; i < number; i++)
-  {
-    delay(500);
-    toggleLed();
-    delay(500);
-    toggleLed();
-  }
-}
-
 void toggleLed()
 {
   led_status = !led_status;
