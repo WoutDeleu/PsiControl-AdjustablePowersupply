@@ -197,22 +197,9 @@ void attachCommandCallbacks()
 // ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
 
 // ----------------------------------- C A L L B A C K S  M E T H O D S -------------------------------------
-void showPossibleCommands()
-{
-  Serial.println("Toggle LED");
-  Serial.println("Connect to Ground");
-  Serial.println("Connect to Bus");
-  Serial.println("Put Voltage");
-  Serial.println("Change Boardnumber");
-  Serial.println("Get Boardnumber");
-  Serial.println("Measure Current");
-  Serial.println("Measure Voltage");
-}
-// Print Errormessage fault in communication
 void onUnknownCommand()
 {
   Serial.println("||Invalid command received, there must be a fault in the communication... The function index received does not match an index stored in the program... Indicating a fault in the communication (retreving data from serial port, ...) ||");
-  showPossibleCommands();
 }
 void setVoltageSerial()
 {
