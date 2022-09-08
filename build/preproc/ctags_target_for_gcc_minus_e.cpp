@@ -68,10 +68,6 @@ enum class MeasRange
   Bi120 = 12,
 };
 
-// Led used in development stage, to show status
-const int led = 14;
-bool led_status = false;
-
 // BoardNr
 // Must be able to be changed in GUI
 int boardNumber;
@@ -168,7 +164,6 @@ CmdMessenger cmdMessenger = CmdMessenger(Serial, field_separator, command_separa
 // Defining possible commands
 enum class CommandCalls
 {
-  TOGGLE_LED = 1,
   PUT_VOLTAGE = 2,
   CONNECT_TO_GROUND = 3,
   CONNECT_TO_BUS = 4,
@@ -183,7 +178,6 @@ enum class CommandCalls
 void attachCommandCallbacks()
 {
   cmdMessenger.attach(onUnknownCommand);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
   cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::DISCONNECT_VOLTAGE), disconnectVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), connectToGroundSerial);
@@ -269,7 +263,6 @@ void disconnectVoltageSerial()
 // A test function which executes some basic funcionallities of the program
 void testFullFunctionallity()
 {
-  digitalWrite(led, 0x1);
   connectToBus(1, true);
   connectVoltageSource(true);
   setVoltage(11);
@@ -281,7 +274,7 @@ void testFullFunctionallity()
   Serial.println("***********");
   Serial.println();
   delay(5000);
-  digitalWrite(led, 0x0);
+
   setVoltage(0);
   Serial.println("***********");
   measured = measureCurrentUsource();
@@ -335,10 +328,6 @@ void setup()
   // Setup cmdMessenger
   attachCommandCallbacks();
   cmdMessenger.printLfCr();
-
-  // Debug Led
-  led_status = true;
-  digitalWrite(led, 0x1);
 
   // Keep track of which channels connected to bus/gnd
   for (int i = 0; i < 16; i++)
@@ -820,56 +809,6 @@ bool isChannelNumberValid(int channel)
   }
   else
     return true;
-}
-
-void sos_flasher_test()
-{
-  digitalWrite(14, 0x1);
-  delay(200);
-  digitalWrite(14, 0x0);
-  delay(200);
-  digitalWrite(14, 0x1);
-  delay(200);
-  digitalWrite(14, 0x0);
-  delay(200);
-  digitalWrite(14, 0x1);
-  delay(200);
-  digitalWrite(14, 0x0);
-  delay(200);
-
-  digitalWrite(14, 0x1);
-  delay(500);
-  digitalWrite(14, 0x0);
-  delay(500);
-  digitalWrite(14, 0x1);
-  delay(500);
-  digitalWrite(14, 0x0);
-  delay(500);
-  digitalWrite(14, 0x1);
-  delay(500);
-  digitalWrite(14, 0x0);
-  delay(500);
-
-  digitalWrite(14, 0x1);
-  delay(200);
-  digitalWrite(14, 0x0);
-  delay(200);
-  digitalWrite(14, 0x1);
-  delay(200);
-  digitalWrite(14, 0x0);
-  delay(200);
-  digitalWrite(14, 0x1);
-  delay(200);
-  digitalWrite(14, 0x0);
-  delay(200);
-}
-void toggleLed()
-{
-  led_status = !led_status;
-  if (led_status)
-    digitalWrite(led, 0x1);
-  else if (!led_status)
-    digitalWrite(led, 0x0);
 }
 # 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\Measure.ino"
 void selectChannel(int channel, bool status)
