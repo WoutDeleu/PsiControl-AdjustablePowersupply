@@ -1,3 +1,8 @@
+// Communication Syntax:
+//    INPUT: [ .... ]
+//    ERROR: || .... ||
+//    Status: ## .... ##
+//    Registers: (( .... ))
 
 #define SIZE_ADDRESSPINS 8
 #define SIZE_DATAPINS 8
@@ -5,6 +10,7 @@
 
 #define INPUT_SELECTOR 0
 #define OUTPUT_SELECTOR 1
+
 #include <CmdMessenger.h>
 #include <string.h>
 // #include <RemoteDebugger.h>
@@ -113,6 +119,7 @@ const int RESET = 53;
 const int ACK = 28;
 const int ERR = 29;
 
+// Analog read pins (to measure current/voltage)
 const byte AD0 = A14;
 const byte AD1 = A13;
 
@@ -157,7 +164,125 @@ int rangeStatus = 0;
 bool gndChannelStatus[16];
 bool busChannelStatus[16];
 
-// -------------------------------  T E S T  F U N C T I O N A L I T Y --------------------------------
+// ---------------------------  S E T U P  C M D   M E S S E N G E R ----------------------------------------
+// Cmd Messenger setup and config for serial communication
+char field_separator = ',';
+char command_separator = ';';
+CmdMessenger cmdMessenger = CmdMessenger(Serial, field_separator, command_separator);
+// Defining possible commands
+enum class CommandCalls
+{
+  TOGGLE_LED = 1,
+  PUT_VOLTAGE = 2,
+  CONNECT_TO_GROUND = 3,
+  CONNECT_TO_BUS = 4,
+  MEASURE_VOLTAGE = 5,
+  MEASURE_CURRENT = 6,
+  CHANGE_BOARDNUMBER = 7,
+  GET_BOARDNUMBER = 8,
+  DISCONNECT_VOLTAGE = 9,
+  RESET = 10
+};
+// Linking command id's to correct functions
+void attachCommandCallbacks()
+{
+  cmdMessenger.attach(onUnknownCommand);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::DISCONNECT_VOLTAGE), disconnectVoltageSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), connectToGroundSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), connectToBusSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), measureVoltageSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_CURRENT), measureCurrentSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CHANGE_BOARDNUMBER), setBoardNumber);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), getBoardNumber);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::RESET), setup);
+}
+// ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
+
+// ----------------------------------- C A L L B A C K S  M E T H O D S -------------------------------------
+void showPossibleCommands()
+{
+  Serial.println("Toggle LED");
+  Serial.println("Connect to Ground");
+  Serial.println("Connect to Bus");
+  Serial.println("Put Voltage");
+  Serial.println("Change Boardnumber");
+  Serial.println("Get Boardnumber");
+  Serial.println("Measure Current");
+  Serial.println("Measure Voltage");
+}
+// Print Errormessage fault in communication
+void onUnknownCommand()
+{
+  Serial.println("||Invalid command received, there must be a fault in the communication... The function index received does not match an index stored in the program... Indicating a fault in the communication (retreving data from serial port, ...) ||");
+  showPossibleCommands();
+}
+void setVoltageSerial()
+{
+  // 2 inputs from GUI, the integral part and fractional part
+  int voltage_int = cmdMessenger.readInt32Arg();
+  int voltage_frac = cmdMessenger.readInt32Arg();
+  connectVoltageSource(true);
+  String combined = String(String(voltage_int) + "." + String(voltage_frac));
+
+  float voltage = combined.toFloat();
+  setVoltage(voltage);
+}
+// Connect correct serial port to the ground
+void connectToGroundSerial()
+{
+  int channel;
+  bool connect;
+  for (int i = 0; i < 8; i++)
+  {
+    channel = cmdMessenger.readInt16Arg();
+    connect = cmdMessenger.readBoolArg();
+    connectToGround(channel, connect);
+  }
+}
+// Connect correct serial port to the bus
+void connectToBusSerial()
+{
+  int channel;
+  bool connect;
+  for (int i = 0; i < 8; i++)
+  {
+    channel = cmdMessenger.readInt16Arg();
+    connect = cmdMessenger.readBoolArg();
+    connectToBus(channel, connect);
+  }
+}
+// Change BoardNumbers
+void setBoardNumber()
+{
+  int boardNr = cmdMessenger.readInt16Arg();
+  boardNumber = boardNr;
+  Serial.print("##Succesfully changed boardNr to: ");
+  Serial.print(boardNr);
+  Serial.println("##");
+}
+void getBoardNumber()
+{
+  Serial.println("BoardNumber: [" + String(boardNumber) + "]");
+}
+void measureVoltageSerial()
+{
+  int channel = cmdMessenger.readInt32Arg();
+  double voltage = measureVoltage(channel);
+  Serial.println("Measured Voltage: [" + String(voltage) + "]");
+}
+void measureCurrentSerial()
+{
+  double measuredCurrent = measureCurrentUsource();
+  Serial.println("Measured current: [" + String(measuredCurrent) + "]");
+}
+void disconnectVoltageSerial()
+{
+  connectVoltageSource(false);
+}
+// -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
+
 // A test function which executes some basic funcionallities of the program
 void testFullFunctionallity()
 {
@@ -184,125 +309,6 @@ void testFullFunctionallity()
   Serial.println();
   delay(5000);
 }
-// ------------------ E N D   T E S T   F U N C T I O N A L I T Y ------------------
-
-// ---------------------------  S E T U P  C M D   M E S S E N G E R-----------------------------------
-// Cmd Messenger setup and config for serial communication
-char field_separator = ',';
-char command_separator = ';';
-CmdMessenger cmdMessenger = CmdMessenger(Serial, field_separator, command_separator);
-// Defining possible commands
-enum class CommandCalls
-{
-  TOGGLE_LED = 1,
-  PUT_VOLTAGE = 2,
-  CONNECT_TO_GROUND = 3,
-  CONNECT_TO_BUS = 4,
-  MEASURE_VOLTAGE = 5,
-  MEASURE_CURRENT = 6,
-  CHANGE_BOARDNUMBER = 7,
-  GET_BOARDNUMBER = 8,
-  DISCONNECT_VOLTAGE = 9
-};
-// Linking command id's to correct functions
-void attachCommandCallbacks()
-{
-  cmdMessenger.attach(onUnknownCommand);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::DISCONNECT_VOLTAGE), disconnectVoltageSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), connectToGroundSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), connectToBusSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), measureVoltageSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_CURRENT), measureCurrentSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::CHANGE_BOARDNUMBER), setBoardNumber);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), getBoardNumber);
-}
-// ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
-
-// ----------------------------------- C A L L B A C K S  M E T H O D S -------------------------------------
-void showPossibleCommands()
-{
-  Serial.println("Toggle LED");
-  Serial.println("Connect to Ground");
-  Serial.println("Connect to Bus");
-  Serial.println("Put Voltage");
-  Serial.println("Change Boardnumber");
-  Serial.println("Get Boardnumber");
-  Serial.println("Measure Current");
-  Serial.println("Measure Voltage");
-}
-// Print Errormessage fault in communication
-void onUnknownCommand()
-{
-  Serial.println("|Invalid command received|");
-  showPossibleCommands();
-}
-void setVoltageSerial()
-{
-  // 2 inputs from GUI, the integral part and fractional part
-  int voltage_int = cmdMessenger.readInt32Arg();
-  int voltage_frac = cmdMessenger.readInt32Arg();
-  connectVoltageSource(true);
-  String combined = String(String(voltage_int) + "." + String(voltage_frac));
-
-  float voltage = combined.toFloat();
-  setVoltage(voltage);
-}
-// Connect correct serial port to the ground
-void connectToGroundSerial()
-{
-  int channel;
-  bool connect;
-  for (int i = 0; i < 8; i++)
-  {
-    channel = cmdMessenger.readInt16Arg();
-    connect = cmdMessenger.readBoolArg();
-    connectToGround(channel, connect);
-    // Serial.println("Ground channel, connect: " + String(channel) + ", " + String(connect));
-  }
-}
-// Connect correct serial port to the bus
-void connectToBusSerial()
-{
-  int channel;
-  bool connect;
-  for (int i = 0; i < 8; i++)
-  {
-    channel = cmdMessenger.readInt16Arg();
-    connect = cmdMessenger.readBoolArg();
-    connectToBus(channel, connect);
-  }
-}
-// Change BoardNumbers
-void setBoardNumber()
-{
-  int boardNr = cmdMessenger.readInt16Arg();
-  boardNumber = boardNr;
-  Serial.print("Succesfully changed boardNr to: ");
-  Serial.println(boardNr);
-}
-void getBoardNumber()
-{
-  Serial.println("[" + String(boardNumber) + "]");
-}
-void measureVoltageSerial()
-{
-  int channel = cmdMessenger.readInt32Arg();
-  double voltage = measureVoltage(channel);
-  Serial.println("[" + String(voltage) + "]");
-}
-void measureCurrentSerial()
-{
-  double measuredCurrent = measureCurrentUsource();
-  Serial.println("[" + String(measuredCurrent) + "]");
-}
-void disconnectVoltageSerial()
-{
-  connectVoltageSource(false);
-}
-// -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
-
 // Set the initial register statusses in the code
 void setupStatus()
 {
@@ -334,24 +340,30 @@ void setupStatus()
   // settling time
   delay(RELAY_OFF_SETTLING);
 }
+// 'reset' arduino
 void setup()
 {
+  boardNumber = 0x00;
   Serial.begin(115200);
+  Serial.println("##Setup Arduino##");
   setupPins();
   setupStatus();
-  boardNumber = 0;
 
+  // Setup cmdMessenger
   attachCommandCallbacks();
   cmdMessenger.printLfCr();
 
+  // Debug Led
   led_status = true;
   digitalWrite(led, HIGH);
 
+  // Keep track of which channels connected to bus/gnd
   for (int i = 0; i < 16; i++)
   {
     busChannelStatus[i] = false;
     gndChannelStatus[i] = false;
   }
+  Serial.println("##Setup Complete##");
 }
 // In the loop, the cmdMessenger keeps checking for new input commands
 void loop()

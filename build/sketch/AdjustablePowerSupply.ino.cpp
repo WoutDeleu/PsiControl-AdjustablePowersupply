@@ -1,5 +1,10 @@
 #include <Arduino.h>
 #line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+// Communication Syntax:
+//    INPUT: [ .... ]
+//    ERROR: || .... ||
+//    Status: ## .... ##
+//    Registers: (( .... ))
 
 #define SIZE_ADDRESSPINS 8
 #define SIZE_DATAPINS 8
@@ -7,6 +12,7 @@
 
 #define INPUT_SELECTOR 0
 #define OUTPUT_SELECTOR 1
+
 #include <CmdMessenger.h>
 #include <string.h>
 // #include <RemoteDebugger.h>
@@ -115,6 +121,7 @@ const int RESET = 53;
 const int ACK = 28;
 const int ERR = 29;
 
+// Analog read pins (to measure current/voltage)
 const byte AD0 = A14;
 const byte AD1 = A13;
 
@@ -159,61 +166,79 @@ int rangeStatus = 0;
 bool gndChannelStatus[16];
 bool busChannelStatus[16];
 
-// -------------------------------  T E S T  F U N C T I O N A L I T Y --------------------------------
-// A test function which executes some basic funcionallities of the program
-#line 162 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
-void testFullFunctionallity();
-#line 208 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+// ---------------------------  S E T U P  C M D   M E S S E N G E R ----------------------------------------
+// Cmd Messenger setup and config for serial communication
+char field_separator = ',';
+char command_separator = ';';
+CmdMessenger cmdMessenger = CmdMessenger(Serial, field_separator, command_separator);
+// Defining possible commands
+enum class CommandCalls
+{
+  TOGGLE_LED = 1,
+  PUT_VOLTAGE = 2,
+  CONNECT_TO_GROUND = 3,
+  CONNECT_TO_BUS = 4,
+  MEASURE_VOLTAGE = 5,
+  MEASURE_CURRENT = 6,
+  CHANGE_BOARDNUMBER = 7,
+  GET_BOARDNUMBER = 8,
+  DISCONNECT_VOLTAGE = 9,
+  RESET = 10
+};
+// Linking command id's to correct functions
+#line 187 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void attachCommandCallbacks();
-#line 224 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 204 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void showPossibleCommands();
-#line 236 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 216 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void onUnknownCommand();
-#line 241 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 221 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void setVoltageSerial();
-#line 253 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 233 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void connectToGroundSerial();
-#line 266 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 245 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void connectToBusSerial();
-#line 277 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 257 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void setBoardNumber();
-#line 284 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 265 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void getBoardNumber();
-#line 288 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 269 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void measureVoltageSerial();
-#line 294 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 275 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void measureCurrentSerial();
-#line 299 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 280 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void disconnectVoltageSerial();
-#line 306 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 287 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+void testFullFunctionallity();
+#line 313 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void setupStatus();
-#line 336 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 344 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void setup();
-#line 355 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 369 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void loop();
 #line 6 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void writeData(Register chosenReg, int data, int boardNumber);
-#line 60 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 55 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 int readData(Register chosenReg, int boardNumber);
-#line 117 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 105 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void printGNDStatus(int status0_before, int status0_after, int status1_before, int status1_after);
-#line 140 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 128 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void connectToGround(int channel, bool status);
-#line 197 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 185 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void printBusStatus(int status0_before, int status0_after, int status1_before, int status1_after);
-#line 220 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 207 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void connectToBus(int channel, bool status);
-#line 277 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 264 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void printConnectVoltageStatus(int before, int after);
-#line 291 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 278 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void connectVoltageSource(bool status);
-#line 317 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 304 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void printSetVoltageStatus(int status0_before, int status0_after, int status1_before, int status1_after);
-#line 339 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 326 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void setVoltage(float voltage);
-#line 371 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 358 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 double measureVoltage(int channel);
-#line 403 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
+#line 390 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 double measureCurrentUsource();
 #line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 int formatBinaryToInt(int arr[], int arrSize);
@@ -221,10 +246,6 @@ int formatBinaryToInt(int arr[], int arrSize);
 void formatIntToHex(int integer, char hex[]);
 #line 15 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 void formatIntToBin(int value, int data[], int length);
-#line 27 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
-void printFullArray(int arr[], int sizeArr);
-#line 37 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
-void printFullArray(char arr[], int sizeArr);
 #line 47 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 void printCompactArray(int arr[], int sizeArr);
 #line 56 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
@@ -247,17 +268,117 @@ void selectChannel(int channel, bool status);
 void selectMeasRange(MeasRange range);
 #line 52 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\Measure.ino"
 void selectIchUsrc(bool connect);
-#line 74 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\Measure.ino"
+#line 79 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\Measure.ino"
 double measure(MeasRange range, int pin);
 #line 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\PinController.ino"
 void setupPins();
-#line 31 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\PinController.ino"
+#line 30 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\PinController.ino"
 void configDataPins(int io);
-#line 53 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\PinController.ino"
+#line 52 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\PinController.ino"
 void writePins(const int pin[], int pin_size, int inputData);
-#line 66 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\PinController.ino"
+#line 65 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\PinController.ino"
 int readPins(const int pin[], int pin_size);
-#line 162 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 187 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+void attachCommandCallbacks()
+{
+  cmdMessenger.attach(onUnknownCommand);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::DISCONNECT_VOLTAGE), disconnectVoltageSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), connectToGroundSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), connectToBusSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), measureVoltageSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_CURRENT), measureCurrentSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CHANGE_BOARDNUMBER), setBoardNumber);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), getBoardNumber);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::RESET), setup);
+}
+// ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
+
+// ----------------------------------- C A L L B A C K S  M E T H O D S -------------------------------------
+void showPossibleCommands()
+{
+  Serial.println("Toggle LED");
+  Serial.println("Connect to Ground");
+  Serial.println("Connect to Bus");
+  Serial.println("Put Voltage");
+  Serial.println("Change Boardnumber");
+  Serial.println("Get Boardnumber");
+  Serial.println("Measure Current");
+  Serial.println("Measure Voltage");
+}
+// Print Errormessage fault in communication
+void onUnknownCommand()
+{
+  Serial.println("||Invalid command received, there must be a fault in the communication... The function index received does not match an index stored in the program... Indicating a fault in the communication (retreving data from serial port, ...) ||");
+  showPossibleCommands();
+}
+void setVoltageSerial()
+{
+  // 2 inputs from GUI, the integral part and fractional part
+  int voltage_int = cmdMessenger.readInt32Arg();
+  int voltage_frac = cmdMessenger.readInt32Arg();
+  connectVoltageSource(true);
+  String combined = String(String(voltage_int) + "." + String(voltage_frac));
+
+  float voltage = combined.toFloat();
+  setVoltage(voltage);
+}
+// Connect correct serial port to the ground
+void connectToGroundSerial()
+{
+  int channel;
+  bool connect;
+  for (int i = 0; i < 8; i++)
+  {
+    channel = cmdMessenger.readInt16Arg();
+    connect = cmdMessenger.readBoolArg();
+    connectToGround(channel, connect);
+  }
+}
+// Connect correct serial port to the bus
+void connectToBusSerial()
+{
+  int channel;
+  bool connect;
+  for (int i = 0; i < 8; i++)
+  {
+    channel = cmdMessenger.readInt16Arg();
+    connect = cmdMessenger.readBoolArg();
+    connectToBus(channel, connect);
+  }
+}
+// Change BoardNumbers
+void setBoardNumber()
+{
+  int boardNr = cmdMessenger.readInt16Arg();
+  boardNumber = boardNr;
+  Serial.print("##Succesfully changed boardNr to: ");
+  Serial.print(boardNr);
+  Serial.println("##");
+}
+void getBoardNumber()
+{
+  Serial.println("BoardNumber: [" + String(boardNumber) + "]");
+}
+void measureVoltageSerial()
+{
+  int channel = cmdMessenger.readInt32Arg();
+  double voltage = measureVoltage(channel);
+  Serial.println("Measured Voltage: [" + String(voltage) + "]");
+}
+void measureCurrentSerial()
+{
+  double measuredCurrent = measureCurrentUsource();
+  Serial.println("Measured current: [" + String(measuredCurrent) + "]");
+}
+void disconnectVoltageSerial()
+{
+  connectVoltageSource(false);
+}
+// -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
+
+// A test function which executes some basic funcionallities of the program
 void testFullFunctionallity()
 {
   digitalWrite(led, HIGH);
@@ -283,124 +404,6 @@ void testFullFunctionallity()
   Serial.println();
   delay(5000);
 }
-// ------------------ E N D   T E S T   F U N C T I O N A L I T Y ------------------
-
-// ---------------------------  S E T U P  C M D   M E S S E N G E R-----------------------------------
-// Cmd Messenger setup and config for serial communication
-char field_separator = ',';
-char command_separator = ';';
-CmdMessenger cmdMessenger = CmdMessenger(Serial, field_separator, command_separator);
-// Defining possible commands
-enum class CommandCalls
-{
-  TOGGLE_LED = 1,
-  PUT_VOLTAGE = 2,
-  CONNECT_TO_GROUND = 3,
-  CONNECT_TO_BUS = 4,
-  MEASURE_VOLTAGE = 5,
-  MEASURE_CURRENT = 6,
-  CHANGE_BOARDNUMBER = 7,
-  GET_BOARDNUMBER = 8,
-  DISCONNECT_VOLTAGE = 9
-};
-// Linking command id's to correct functions
-void attachCommandCallbacks()
-{
-  cmdMessenger.attach(onUnknownCommand);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::DISCONNECT_VOLTAGE), disconnectVoltageSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), connectToGroundSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), connectToBusSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), measureVoltageSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_CURRENT), measureCurrentSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::CHANGE_BOARDNUMBER), setBoardNumber);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), getBoardNumber);
-}
-// ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
-
-// ----------------------------------- C A L L B A C K S  M E T H O D S -------------------------------------
-void showPossibleCommands()
-{
-  Serial.println("Toggle LED");
-  Serial.println("Connect to Ground");
-  Serial.println("Connect to Bus");
-  Serial.println("Put Voltage");
-  Serial.println("Change Boardnumber");
-  Serial.println("Get Boardnumber");
-  Serial.println("Measure Current");
-  Serial.println("Measure Voltage");
-}
-// Print Errormessage fault in communication
-void onUnknownCommand()
-{
-  Serial.println("|Invalid command received|");
-  showPossibleCommands();
-}
-void setVoltageSerial()
-{
-  // 2 inputs from GUI, the integral part and fractional part
-  int voltage_int = cmdMessenger.readInt32Arg();
-  int voltage_frac = cmdMessenger.readInt32Arg();
-  connectVoltageSource(true);
-  String combined = String(String(voltage_int) + "." + String(voltage_frac));
-
-  float voltage = combined.toFloat();
-  setVoltage(voltage);
-}
-// Connect correct serial port to the ground
-void connectToGroundSerial()
-{
-  int channel;
-  bool connect;
-  for (int i = 0; i < 8; i++)
-  {
-    channel = cmdMessenger.readInt16Arg();
-    connect = cmdMessenger.readBoolArg();
-    connectToGround(channel, connect);
-    // Serial.println("Ground channel, connect: " + String(channel) + ", " + String(connect));
-  }
-}
-// Connect correct serial port to the bus
-void connectToBusSerial()
-{
-  int channel;
-  bool connect;
-  for (int i = 0; i < 8; i++)
-  {
-    channel = cmdMessenger.readInt16Arg();
-    connect = cmdMessenger.readBoolArg();
-    connectToBus(channel, connect);
-  }
-}
-void setBoardNumber()
-{
-  int boardNr = cmdMessenger.readInt16Arg();
-  boardNumber = boardNr;
-  Serial.print("Succesfully changed boardNr to: ");
-  Serial.println(boardNr);
-}
-void getBoardNumber()
-{
-  Serial.println("[" + String(boardNumber) + "]");
-}
-void measureVoltageSerial()
-{
-  int channel = cmdMessenger.readInt32Arg();
-  double voltage = measureVoltage(channel);
-  Serial.println("[" + String(voltage) + "]");
-}
-void measureCurrentSerial()
-{
-  double measuredCurrent = measureCurrentUsource();
-  Serial.println("[" + String(measuredCurrent) + "]");
-}
-void disconnectVoltageSerial()
-{
-  connectVoltageSource(false);
-}
-// -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
-
 // Set the initial register statusses in the code
 void setupStatus()
 {
@@ -432,25 +435,32 @@ void setupStatus()
   // settling time
   delay(RELAY_OFF_SETTLING);
 }
+// 'reset' arduino
 void setup()
 {
+  boardNumber = 0x00;
   Serial.begin(115200);
+  Serial.println("##Setup Arduino##");
   setupPins();
   setupStatus();
-  boardNumber = 0;
 
+  // Setup cmdMessenger
   attachCommandCallbacks();
   cmdMessenger.printLfCr();
 
+  // Debug Led
   led_status = true;
   digitalWrite(led, HIGH);
 
+  // Keep track of which channels connected to bus/gnd
   for (int i = 0; i < 16; i++)
   {
     busChannelStatus[i] = false;
     gndChannelStatus[i] = false;
   }
+  Serial.println("##Setup Complete##");
 }
+// In the loop, the cmdMessenger keeps checking for new input commands
 void loop()
 {
   // processing incoming commands
@@ -465,16 +475,16 @@ MeasRange boardrange = DEFAULT_BOARD_RANGE;
 
 void writeData(Register chosenReg, int data, int boardNumber)
 {
-    // Serial.println("WRITE OPERATION");
     // Expect a high ack line
     int ack_value = digitalRead(ACK);
     // ACK initial state needs to be HIGH
     if (ack_value != HIGH)
     {
-        Serial.println("ERROR: ACK was already low \n");
+        Serial.println("||ERROR: ACK was already low||");
     }
     else
     {
+        // To write data, the datapins need to be configurated as output
         configDataPins(OUTPUT_SELECTOR);
         // Write dataBits to pins
         writePins(datapins, SIZE_DATAPINS, data);
@@ -484,51 +494,46 @@ void writeData(Register chosenReg, int data, int boardNumber)
         writePins(addresspins, SIZE_ADDRESSPINS, (int)chosenReg);
         // Enable write
         digitalWrite(WR, LOW);
-        // Serial.println("Datapins, addresspins and cardAddressPins are configured and written");
-        // Serial.println("WriteLine is set LOW");
 
         for (int i = 1; i <= MAX_ACK_CHECK_RETRIES; i++)
         {
             ack_value = digitalRead(ACK);
             // ACK received
-            // Serial.println("ACK value = " + String(ack_value));
             if (ack_value == LOW)
             {
-                // Serial.println("ACK received");
+                // Ack received
                 break;
             }
             // ACK expired
             if (i == MAX_ACK_CHECK_RETRIES)
             {
                 digitalWrite(WR, HIGH);
-                Serial.println("ERROR: ACK expired");
+                Serial.println("||ERROR: ACK expired||");
                 break;
             }
         }
         digitalWrite(WR, HIGH);
-        // Serial.println("Writeline is reset (low)");
 
         // Check for errors
         int err_value = digitalRead(ERR);
         if (err_value != HIGH)
         {
-            Serial.println("ERROR detected");
+            Serial.println("||ERROR detected||");
         }
-        // Serial.println("Write finished \n");
     }
 }
 int readData(Register chosenReg, int boardNumber)
 {
-    Serial.println("READ OPERATION");
     // Expect a high ack line
     int ack_value = digitalRead(ACK);
     // ACK initial state needs to be HIGH
     if (ack_value != HIGH)
     {
-        Serial.println("ERROR: ACK was already low \n");
+        Serial.println("||ERROR: ACK was already low||");
     }
     else
     {
+        // To read data, the datapins need to be configurated as input
         configDataPins(INPUT_SELECTOR);
         // Select board using cardAddressPins
         writePins(cardAddresspins, SIZE_CARDPINS, boardNumber);
@@ -536,8 +541,6 @@ int readData(Register chosenReg, int boardNumber)
         writePins(addresspins, SIZE_ADDRESSPINS, (int)chosenReg);
         // Enable read
         digitalWrite(RD, LOW);
-        Serial.println("Datapins are configured, addresspins and cardAddressPins are configured and written");
-        Serial.println("Readline is set LOW");
 
         // loop till ACK goes low
         for (int i = 1; i <= MAX_ACK_CHECK_RETRIES; i++)
@@ -546,30 +549,25 @@ int readData(Register chosenReg, int boardNumber)
             // ACK received
             if (ack_value == LOW)
             {
-                Serial.println("ACK received");
                 break;
             }
             // ACK expired
             if (i == MAX_ACK_CHECK_RETRIES)
             {
                 digitalWrite(RD, HIGH);
-                Serial.println("ERROR: ACK expired");
+                Serial.println("||ERROR: ACK expired||");
                 break;
             }
         }
         // Read in data
         int data = readPins(datapins, SIZE_DATAPINS);
-        Serial.println("pins are read");
         digitalWrite(RD, HIGH);
-        Serial.println("Readline is reset (low)");
-
         // Check for errors
         int err_value = digitalRead(ERR);
         if (err_value != HIGH)
         {
-            Serial.println("ERROR detected");
+            Serial.println("||ERROR detected||");
         }
-        Serial.println("Read finished \n");
         return data;
     }
 }
@@ -659,7 +657,6 @@ void printBusStatus(int status0_before, int status0_after, int status1_before, i
     Serial.println("STATUS BUS:");
     Serial.print("busCon0Status before: ");
     int statusGnd[8];
-    // Serial.print(status0_before);
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
@@ -898,26 +895,26 @@ void formatIntToBin(int value, int data[], int length)
   }
 }
 
-void printFullArray(int arr[], int sizeArr)
-{
-  Serial.print("Size: " + String(sizeArr) + "\n");
-  Serial.print("Array : {");
-  for (int i = 0; i < sizeArr; i++)
-  {
-    Serial.print(String(arr[i]));
-  }
-  Serial.print("} \n\n");
-}
-void printFullArray(char arr[], int sizeArr)
-{
-  Serial.print("Size: " + String(sizeArr) + "\n");
-  Serial.print("Array : {");
-  for (int i = 0; i < sizeArr; i++)
-  {
-    Serial.print(arr[i]);
-  }
-  Serial.print("} \n\n");
-}
+// void printFullArray(int arr[], int sizeArr)
+// {
+//   Serial.print("Size: " + String(sizeArr) + "\n");
+//   Serial.print("Array : {");
+//   for (int i = 0; i < sizeArr; i++)
+//   {
+//     Serial.print(String(arr[i]));
+//   }
+//   Serial.print("} ");
+// }
+// void printFullArray(char arr[], int sizeArr)
+// {
+//   Serial.print("Size: " + String(sizeArr) + "\n");
+//   Serial.print("Array : {");
+//   for (int i = 0; i < sizeArr; i++)
+//   {
+//     Serial.print(arr[i]);
+//   }
+//   Serial.print("} ");
+// }
 void printCompactArray(int arr[], int sizeArr)
 {
   Serial.print("{");
@@ -925,7 +922,7 @@ void printCompactArray(int arr[], int sizeArr)
   {
     Serial.print(arr[i]);
   }
-  Serial.println("}");
+  Serial.print("} ");
 }
 void printCompactArray(String arr[], int sizeArr)
 {
@@ -934,7 +931,7 @@ void printCompactArray(String arr[], int sizeArr)
   {
     Serial.print(arr[i]);
   }
-  Serial.println("}");
+  Serial.print("} ");
 }
 
 void fillArrayWithZeroes(int arr[], int size)
@@ -1085,6 +1082,10 @@ void selectIchUsrc(bool connect)
     // Enables current measurement
     // Toggles b6, and only b6!
     measureStatusCopy = (connect) ? (measureStatusCopy | 0x40) : (measureStatusCopy & ~0x40);
+    if (connect)
+        Serial.println("##ENABLE CURRENT MEASUREMENT##");
+    else
+        Serial.println("##DISABLE CURRENT MEASUREMENT##");
     // b7 U(0) or I(1) source current
     // Controls RE40 -> To choose measurement from voltage_source or current_source
     measureStatusCopy &= ~0x80;
@@ -1092,10 +1093,11 @@ void selectIchUsrc(bool connect)
     {
         measureStatus = measureStatusCopy;
         int data[8];
-        Serial.print("Measure data: ");
+        Serial.print("((MEASURE REGISTER: ");
         fillArrayWithZeroes(data, 8);
         formatIntToBin(measureStatus, data, 8);
         printCompactArray(data, 8);
+        Serial.println(")) \n");
         writeData(Register::MEASURE, measureStatus, boardNumber);
         delay(RELAY_ON_SETTLING);
     }
@@ -1138,7 +1140,6 @@ void setupPins()
   {
     pinMode(cardAddresspins[i], OUTPUT);
   }
-
   // Datapins are bidirectional, need to be changed at runtime
 }
 
@@ -1159,7 +1160,7 @@ void configDataPins(int io)
     }
     break;
   default:
-    Serial.print("Error: fault in config");
+    Serial.print("||Error: fault in the configuration of the datapins -> fault in selecting them as input/output. This occurs in the writeData/readData function||");
     break;
   }
 }
@@ -1181,11 +1182,8 @@ int readPins(const int pin[], int pin_size)
 {
   int data[pin_size];
   int j = pin_size - 1;
-  // For loop moet nog worden gecontrolleerd...
   for (int i = 0; i < pin_size; i++)
   {
-    // MSB of data = data[0]
-    // MSB of pins = pin[pin_size-1]
     data[i] = digitalRead(pin[j]);
     j--;
   }

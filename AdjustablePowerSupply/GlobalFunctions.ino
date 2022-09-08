@@ -24,26 +24,6 @@ void formatIntToBin(int value, int data[], int length)
   }
 }
 
-void printFullArray(int arr[], int sizeArr)
-{
-  Serial.print("Size: " + String(sizeArr) + "\n");
-  Serial.print("Array : {");
-  for (int i = 0; i < sizeArr; i++)
-  {
-    Serial.print(String(arr[i]));
-  }
-  Serial.print("} \n\n");
-}
-void printFullArray(char arr[], int sizeArr)
-{
-  Serial.print("Size: " + String(sizeArr) + "\n");
-  Serial.print("Array : {");
-  for (int i = 0; i < sizeArr; i++)
-  {
-    Serial.print(arr[i]);
-  }
-  Serial.print("} \n\n");
-}
 void printCompactArray(int arr[], int sizeArr)
 {
   Serial.print("{");
@@ -51,7 +31,7 @@ void printCompactArray(int arr[], int sizeArr)
   {
     Serial.print(arr[i]);
   }
-  Serial.println("}");
+  Serial.print("} ");
 }
 void printCompactArray(String arr[], int sizeArr)
 {
@@ -60,7 +40,7 @@ void printCompactArray(String arr[], int sizeArr)
   {
     Serial.print(arr[i]);
   }
-  Serial.println("}");
+  Serial.print("} ");
 }
 
 void fillArrayWithZeroes(int arr[], int size)

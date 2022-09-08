@@ -24,7 +24,6 @@ void setupPins()
   {
     pinMode(cardAddresspins[i], OUTPUT);
   }
-
   // Datapins are bidirectional, need to be changed at runtime
 }
 
@@ -45,7 +44,7 @@ void configDataPins(int io)
     }
     break;
   default:
-    Serial.print("Error: fault in config");
+    Serial.print("||Error: fault in the configuration of the datapins -> fault in selecting them as input/output. This occurs in the writeData/readData function||");
     break;
   }
 }
@@ -67,11 +66,8 @@ int readPins(const int pin[], int pin_size)
 {
   int data[pin_size];
   int j = pin_size - 1;
-  // For loop moet nog worden gecontrolleerd...
   for (int i = 0; i < pin_size; i++)
   {
-    // MSB of data = data[0]
-    // MSB of pins = pin[pin_size-1]
     data[i] = digitalRead(pin[j]);
     j--;
   }

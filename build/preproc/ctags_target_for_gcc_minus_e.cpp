@@ -1,15 +1,14 @@
 # 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+// Communication Syntax:
+//    INPUT: [ .... ]
+//    ERROR: || .... ||
+//    Status: ## .... ##
+//    Registers: (( .... ))
+# 14 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+# 15 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino" 2
+# 16 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino" 2
 
-
-
-
-
-
-
-# 9 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino" 2
-# 10 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino" 2
-
-# 10 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+# 16 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 // #include <RemoteDebugger.h>
 
 enum class Register
@@ -116,6 +115,7 @@ const int RESET = 53;
 const int ACK = 28;
 const int ERR = 29;
 
+// Analog read pins (to measure current/voltage)
 const byte AD0 = A14;
 const byte AD1 = A13;
 
@@ -160,7 +160,125 @@ int rangeStatus = 0;
 bool gndChannelStatus[16];
 bool busChannelStatus[16];
 
-// -------------------------------  T E S T  F U N C T I O N A L I T Y --------------------------------
+// ---------------------------  S E T U P  C M D   M E S S E N G E R ----------------------------------------
+// Cmd Messenger setup and config for serial communication
+char field_separator = ',';
+char command_separator = ';';
+CmdMessenger cmdMessenger = CmdMessenger(Serial, field_separator, command_separator);
+// Defining possible commands
+enum class CommandCalls
+{
+  TOGGLE_LED = 1,
+  PUT_VOLTAGE = 2,
+  CONNECT_TO_GROUND = 3,
+  CONNECT_TO_BUS = 4,
+  MEASURE_VOLTAGE = 5,
+  MEASURE_CURRENT = 6,
+  CHANGE_BOARDNUMBER = 7,
+  GET_BOARDNUMBER = 8,
+  DISCONNECT_VOLTAGE = 9,
+  RESET = 10
+};
+// Linking command id's to correct functions
+void attachCommandCallbacks()
+{
+  cmdMessenger.attach(onUnknownCommand);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::DISCONNECT_VOLTAGE), disconnectVoltageSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), connectToGroundSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), connectToBusSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), measureVoltageSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_CURRENT), measureCurrentSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::CHANGE_BOARDNUMBER), setBoardNumber);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), getBoardNumber);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::RESET), setup);
+}
+// ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
+
+// ----------------------------------- C A L L B A C K S  M E T H O D S -------------------------------------
+void showPossibleCommands()
+{
+  Serial.println("Toggle LED");
+  Serial.println("Connect to Ground");
+  Serial.println("Connect to Bus");
+  Serial.println("Put Voltage");
+  Serial.println("Change Boardnumber");
+  Serial.println("Get Boardnumber");
+  Serial.println("Measure Current");
+  Serial.println("Measure Voltage");
+}
+// Print Errormessage fault in communication
+void onUnknownCommand()
+{
+  Serial.println("||Invalid command received, there must be a fault in the communication... The function index received does not match an index stored in the program... Indicating a fault in the communication (retreving data from serial port, ...) ||");
+  showPossibleCommands();
+}
+void setVoltageSerial()
+{
+  // 2 inputs from GUI, the integral part and fractional part
+  int voltage_int = cmdMessenger.readInt32Arg();
+  int voltage_frac = cmdMessenger.readInt32Arg();
+  connectVoltageSource(true);
+  String combined = String(String(voltage_int) + "." + String(voltage_frac));
+
+  float voltage = combined.toFloat();
+  setVoltage(voltage);
+}
+// Connect correct serial port to the ground
+void connectToGroundSerial()
+{
+  int channel;
+  bool connect;
+  for (int i = 0; i < 8; i++)
+  {
+    channel = cmdMessenger.readInt16Arg();
+    connect = cmdMessenger.readBoolArg();
+    connectToGround(channel, connect);
+  }
+}
+// Connect correct serial port to the bus
+void connectToBusSerial()
+{
+  int channel;
+  bool connect;
+  for (int i = 0; i < 8; i++)
+  {
+    channel = cmdMessenger.readInt16Arg();
+    connect = cmdMessenger.readBoolArg();
+    connectToBus(channel, connect);
+  }
+}
+// Change BoardNumbers
+void setBoardNumber()
+{
+  int boardNr = cmdMessenger.readInt16Arg();
+  boardNumber = boardNr;
+  Serial.print("##Succesfully changed boardNr to: ");
+  Serial.print(boardNr);
+  Serial.println("##");
+}
+void getBoardNumber()
+{
+  Serial.println("BoardNumber: [" + String(boardNumber) + "]");
+}
+void measureVoltageSerial()
+{
+  int channel = cmdMessenger.readInt32Arg();
+  double voltage = measureVoltage(channel);
+  Serial.println("Measured Voltage: [" + String(voltage) + "]");
+}
+void measureCurrentSerial()
+{
+  double measuredCurrent = measureCurrentUsource();
+  Serial.println("Measured current: [" + String(measuredCurrent) + "]");
+}
+void disconnectVoltageSerial()
+{
+  connectVoltageSource(false);
+}
+// -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
+
 // A test function which executes some basic funcionallities of the program
 void testFullFunctionallity()
 {
@@ -187,124 +305,6 @@ void testFullFunctionallity()
   Serial.println();
   delay(5000);
 }
-// ------------------ E N D   T E S T   F U N C T I O N A L I T Y ------------------
-
-// ---------------------------  S E T U P  C M D   M E S S E N G E R-----------------------------------
-// Cmd Messenger setup and config for serial communication
-char field_separator = ',';
-char command_separator = ';';
-CmdMessenger cmdMessenger = CmdMessenger(Serial, field_separator, command_separator);
-// Defining possible commands
-enum class CommandCalls
-{
-  TOGGLE_LED = 1,
-  PUT_VOLTAGE = 2,
-  CONNECT_TO_GROUND = 3,
-  CONNECT_TO_BUS = 4,
-  MEASURE_VOLTAGE = 5,
-  MEASURE_CURRENT = 6,
-  CHANGE_BOARDNUMBER = 7,
-  GET_BOARDNUMBER = 8,
-  DISCONNECT_VOLTAGE = 9
-};
-// Linking command id's to correct functions
-void attachCommandCallbacks()
-{
-  cmdMessenger.attach(onUnknownCommand);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::TOGGLE_LED), toggleLed);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::DISCONNECT_VOLTAGE), disconnectVoltageSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), connectToGroundSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_BUS), connectToBusSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_VOLTAGE), measureVoltageSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::MEASURE_CURRENT), measureCurrentSerial);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::CHANGE_BOARDNUMBER), setBoardNumber);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), getBoardNumber);
-}
-// ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
-
-// ----------------------------------- C A L L B A C K S  M E T H O D S -------------------------------------
-void showPossibleCommands()
-{
-  Serial.println("Toggle LED");
-  Serial.println("Connect to Ground");
-  Serial.println("Connect to Bus");
-  Serial.println("Put Voltage");
-  Serial.println("Change Boardnumber");
-  Serial.println("Get Boardnumber");
-  Serial.println("Measure Current");
-  Serial.println("Measure Voltage");
-}
-// Print Errormessage fault in communication
-void onUnknownCommand()
-{
-  Serial.println("|Invalid command received|");
-  showPossibleCommands();
-}
-void setVoltageSerial()
-{
-  // 2 inputs from GUI, the integral part and fractional part
-  int voltage_int = cmdMessenger.readInt32Arg();
-  int voltage_frac = cmdMessenger.readInt32Arg();
-  connectVoltageSource(true);
-  String combined = String(String(voltage_int) + "." + String(voltage_frac));
-
-  float voltage = combined.toFloat();
-  setVoltage(voltage);
-}
-// Connect correct serial port to the ground
-void connectToGroundSerial()
-{
-  int channel;
-  bool connect;
-  for (int i = 0; i < 8; i++)
-  {
-    channel = cmdMessenger.readInt16Arg();
-    connect = cmdMessenger.readBoolArg();
-    connectToGround(channel, connect);
-    // Serial.println("Ground channel, connect: " + String(channel) + ", " + String(connect));
-  }
-}
-// Connect correct serial port to the bus
-void connectToBusSerial()
-{
-  int channel;
-  bool connect;
-  for (int i = 0; i < 8; i++)
-  {
-    channel = cmdMessenger.readInt16Arg();
-    connect = cmdMessenger.readBoolArg();
-    connectToBus(channel, connect);
-  }
-}
-void setBoardNumber()
-{
-  int boardNr = cmdMessenger.readInt16Arg();
-  boardNumber = boardNr;
-  Serial.print("Succesfully changed boardNr to: ");
-  Serial.println(boardNr);
-}
-void getBoardNumber()
-{
-  Serial.println("[" + String(boardNumber) + "]");
-}
-void measureVoltageSerial()
-{
-  int channel = cmdMessenger.readInt32Arg();
-  double voltage = measureVoltage(channel);
-  Serial.println("[" + String(voltage) + "]");
-}
-void measureCurrentSerial()
-{
-  double measuredCurrent = measureCurrentUsource();
-  Serial.println("[" + String(measuredCurrent) + "]");
-}
-void disconnectVoltageSerial()
-{
-  connectVoltageSource(false);
-}
-// -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
-
 // Set the initial register statusses in the code
 void setupStatus()
 {
@@ -336,25 +336,32 @@ void setupStatus()
   // settling time
   delay(RELAY_OFF_SETTLING);
 }
+// 'reset' arduino
 void setup()
 {
+  boardNumber = 0x00;
   Serial.begin(115200);
+  Serial.println("##Setup Arduino##");
   setupPins();
   setupStatus();
-  boardNumber = 0;
 
+  // Setup cmdMessenger
   attachCommandCallbacks();
   cmdMessenger.printLfCr();
 
+  // Debug Led
   led_status = true;
   digitalWrite(led, 0x1);
 
+  // Keep track of which channels connected to bus/gnd
   for (int i = 0; i < 16; i++)
   {
     busChannelStatus[i] = false;
     gndChannelStatus[i] = false;
   }
+  Serial.println("##Setup Complete##");
 }
+// In the loop, the cmdMessenger keeps checking for new input commands
 void loop()
 {
   // processing incoming commands
@@ -370,16 +377,16 @@ MeasRange boardrange = DEFAULT_BOARD_RANGE;
 
 void writeData(Register chosenReg, int data, int boardNumber)
 {
-    // Serial.println("WRITE OPERATION");
     // Expect a high ack line
     int ack_value = digitalRead(ACK);
     // ACK initial state needs to be HIGH
     if (ack_value != 0x1)
     {
-        Serial.println("ERROR: ACK was already low \n");
+        Serial.println("||ERROR: ACK was already low||");
     }
     else
     {
+        // To write data, the datapins need to be configurated as output
         configDataPins(1);
         // Write dataBits to pins
         writePins(datapins, 8, data);
@@ -389,51 +396,46 @@ void writeData(Register chosenReg, int data, int boardNumber)
         writePins(addresspins, 8, (int)chosenReg);
         // Enable write
         digitalWrite(WR, 0x0);
-        // Serial.println("Datapins, addresspins and cardAddressPins are configured and written");
-        // Serial.println("WriteLine is set LOW");
 
         for (int i = 1; i <= MAX_ACK_CHECK_RETRIES; i++)
         {
             ack_value = digitalRead(ACK);
             // ACK received
-            // Serial.println("ACK value = " + String(ack_value));
             if (ack_value == 0x0)
             {
-                // Serial.println("ACK received");
+                // Ack received
                 break;
             }
             // ACK expired
             if (i == MAX_ACK_CHECK_RETRIES)
             {
                 digitalWrite(WR, 0x1);
-                Serial.println("ERROR: ACK expired");
+                Serial.println("||ERROR: ACK expired||");
                 break;
             }
         }
         digitalWrite(WR, 0x1);
-        // Serial.println("Writeline is reset (low)");
 
         // Check for errors
         int err_value = digitalRead(ERR);
         if (err_value != 0x1)
         {
-            Serial.println("ERROR detected");
+            Serial.println("||ERROR detected||");
         }
-        // Serial.println("Write finished \n");
     }
 }
 int readData(Register chosenReg, int boardNumber)
 {
-    Serial.println("READ OPERATION");
     // Expect a high ack line
     int ack_value = digitalRead(ACK);
     // ACK initial state needs to be HIGH
     if (ack_value != 0x1)
     {
-        Serial.println("ERROR: ACK was already low \n");
+        Serial.println("||ERROR: ACK was already low||");
     }
     else
     {
+        // To read data, the datapins need to be configurated as input
         configDataPins(0);
         // Select board using cardAddressPins
         writePins(cardAddresspins, 4, boardNumber);
@@ -441,8 +443,6 @@ int readData(Register chosenReg, int boardNumber)
         writePins(addresspins, 8, (int)chosenReg);
         // Enable read
         digitalWrite(RD, 0x0);
-        Serial.println("Datapins are configured, addresspins and cardAddressPins are configured and written");
-        Serial.println("Readline is set LOW");
 
         // loop till ACK goes low
         for (int i = 1; i <= MAX_ACK_CHECK_RETRIES; i++)
@@ -451,30 +451,25 @@ int readData(Register chosenReg, int boardNumber)
             // ACK received
             if (ack_value == 0x0)
             {
-                Serial.println("ACK received");
                 break;
             }
             // ACK expired
             if (i == MAX_ACK_CHECK_RETRIES)
             {
                 digitalWrite(RD, 0x1);
-                Serial.println("ERROR: ACK expired");
+                Serial.println("||ERROR: ACK expired||");
                 break;
             }
         }
         // Read in data
         int data = readPins(datapins, 8);
-        Serial.println("pins are read");
         digitalWrite(RD, 0x1);
-        Serial.println("Readline is reset (low)");
-
         // Check for errors
         int err_value = digitalRead(ERR);
         if (err_value != 0x1)
         {
-            Serial.println("ERROR detected");
+            Serial.println("||ERROR detected||");
         }
-        Serial.println("Read finished \n");
         return data;
     }
 }
@@ -564,7 +559,6 @@ void printBusStatus(int status0_before, int status0_after, int status1_before, i
     Serial.println("STATUS BUS:");
     Serial.print("busCon0Status before: ");
     int statusGnd[8];
-    // Serial.print(status0_before);
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
@@ -802,26 +796,26 @@ void formatIntToBin(int value, int data[], int length)
   }
 }
 
-void printFullArray(int arr[], int sizeArr)
-{
-  Serial.print("Size: " + String(sizeArr) + "\n");
-  Serial.print("Array : {");
-  for (int i = 0; i < sizeArr; i++)
-  {
-    Serial.print(String(arr[i]));
-  }
-  Serial.print("} \n\n");
-}
-void printFullArray(char arr[], int sizeArr)
-{
-  Serial.print("Size: " + String(sizeArr) + "\n");
-  Serial.print("Array : {");
-  for (int i = 0; i < sizeArr; i++)
-  {
-    Serial.print(arr[i]);
-  }
-  Serial.print("} \n\n");
-}
+// void printFullArray(int arr[], int sizeArr)
+// {
+//   Serial.print("Size: " + String(sizeArr) + "\n");
+//   Serial.print("Array : {");
+//   for (int i = 0; i < sizeArr; i++)
+//   {
+//     Serial.print(String(arr[i]));
+//   }
+//   Serial.print("} ");
+// }
+// void printFullArray(char arr[], int sizeArr)
+// {
+//   Serial.print("Size: " + String(sizeArr) + "\n");
+//   Serial.print("Array : {");
+//   for (int i = 0; i < sizeArr; i++)
+//   {
+//     Serial.print(arr[i]);
+//   }
+//   Serial.print("} ");
+// }
 void printCompactArray(int arr[], int sizeArr)
 {
   Serial.print("{");
@@ -829,7 +823,7 @@ void printCompactArray(int arr[], int sizeArr)
   {
     Serial.print(arr[i]);
   }
-  Serial.println("}");
+  Serial.print("} ");
 }
 void printCompactArray(String arr[], int sizeArr)
 {
@@ -838,7 +832,7 @@ void printCompactArray(String arr[], int sizeArr)
   {
     Serial.print(arr[i]);
   }
-  Serial.println("}");
+  Serial.print("} ");
 }
 
 void fillArrayWithZeroes(int arr[], int size)
@@ -989,6 +983,10 @@ void selectIchUsrc(bool connect)
     // Enables current measurement
     // Toggles b6, and only b6!
     measureStatusCopy = (connect) ? (measureStatusCopy | 0x40) : (measureStatusCopy & ~0x40);
+    if (connect)
+        Serial.println("##ENABLE CURRENT MEASUREMENT##");
+    else
+        Serial.println("##DISABLE CURRENT MEASUREMENT##");
     // b7 U(0) or I(1) source current
     // Controls RE40 -> To choose measurement from voltage_source or current_source
     measureStatusCopy &= ~0x80;
@@ -996,10 +994,11 @@ void selectIchUsrc(bool connect)
     {
         measureStatus = measureStatusCopy;
         int data[8];
-        Serial.print("Measure data: ");
+        Serial.print("((MEASURE REGISTER: ");
         fillArrayWithZeroes(data, 8);
         formatIntToBin(measureStatus, data, 8);
         printCompactArray(data, 8);
+        Serial.println(")) \n");
         writeData(Register::MEASURE, measureStatus, boardNumber);
         delay(RELAY_ON_SETTLING);
     }
@@ -1041,7 +1040,6 @@ void setupPins()
   {
     pinMode(cardAddresspins[i], 0x1);
   }
-
   // Datapins are bidirectional, need to be changed at runtime
 }
 
@@ -1062,7 +1060,7 @@ void configDataPins(int io)
     }
     break;
   default:
-    Serial.print("Error: fault in config");
+    Serial.print("||Error: fault in the configuration of the datapins -> fault in selecting them as input/output. This occurs in the writeData/readData function||");
     break;
   }
 }
@@ -1084,11 +1082,8 @@ int readPins(const int pin[], int pin_size)
 {
   int data[pin_size];
   int j = pin_size - 1;
-  // For loop moet nog worden gecontrolleerd...
   for (int i = 0; i < pin_size; i++)
   {
-    // MSB of data = data[0]
-    // MSB of pins = pin[pin_size-1]
     data[i] = digitalRead(pin[j]);
     j--;
   }

@@ -5,16 +5,16 @@ MeasRange boardrange = DEFAULT_BOARD_RANGE;
 
 void writeData(Register chosenReg, int data, int boardNumber)
 {
-    // Serial.println("WRITE OPERATION");
     // Expect a high ack line
     int ack_value = digitalRead(ACK);
     // ACK initial state needs to be HIGH
     if (ack_value != HIGH)
     {
-        Serial.println("ERROR: ACK was already low \n");
+        Serial.println("||ERROR: ACK was already low||");
     }
     else
     {
+        // To write data, the datapins need to be configurated as output
         configDataPins(OUTPUT_SELECTOR);
         // Write dataBits to pins
         writePins(datapins, SIZE_DATAPINS, data);
@@ -24,51 +24,46 @@ void writeData(Register chosenReg, int data, int boardNumber)
         writePins(addresspins, SIZE_ADDRESSPINS, (int)chosenReg);
         // Enable write
         digitalWrite(WR, LOW);
-        // Serial.println("Datapins, addresspins and cardAddressPins are configured and written");
-        // Serial.println("WriteLine is set LOW");
 
         for (int i = 1; i <= MAX_ACK_CHECK_RETRIES; i++)
         {
             ack_value = digitalRead(ACK);
             // ACK received
-            // Serial.println("ACK value = " + String(ack_value));
             if (ack_value == LOW)
             {
-                // Serial.println("ACK received");
+                // Ack received
                 break;
             }
             // ACK expired
             if (i == MAX_ACK_CHECK_RETRIES)
             {
                 digitalWrite(WR, HIGH);
-                Serial.println("ERROR: ACK expired");
+                Serial.println("||ERROR: ACK expired||");
                 break;
             }
         }
         digitalWrite(WR, HIGH);
-        // Serial.println("Writeline is reset (low)");
 
         // Check for errors
         int err_value = digitalRead(ERR);
         if (err_value != HIGH)
         {
-            Serial.println("ERROR detected");
+            Serial.println("||ERROR detected||");
         }
-        // Serial.println("Write finished \n");
     }
 }
 int readData(Register chosenReg, int boardNumber)
 {
-    Serial.println("READ OPERATION");
     // Expect a high ack line
     int ack_value = digitalRead(ACK);
     // ACK initial state needs to be HIGH
     if (ack_value != HIGH)
     {
-        Serial.println("ERROR: ACK was already low \n");
+        Serial.println("||ERROR: ACK was already low||");
     }
     else
     {
+        // To read data, the datapins need to be configurated as input
         configDataPins(INPUT_SELECTOR);
         // Select board using cardAddressPins
         writePins(cardAddresspins, SIZE_CARDPINS, boardNumber);
@@ -76,8 +71,6 @@ int readData(Register chosenReg, int boardNumber)
         writePins(addresspins, SIZE_ADDRESSPINS, (int)chosenReg);
         // Enable read
         digitalWrite(RD, LOW);
-        Serial.println("Datapins are configured, addresspins and cardAddressPins are configured and written");
-        Serial.println("Readline is set LOW");
 
         // loop till ACK goes low
         for (int i = 1; i <= MAX_ACK_CHECK_RETRIES; i++)
@@ -86,30 +79,25 @@ int readData(Register chosenReg, int boardNumber)
             // ACK received
             if (ack_value == LOW)
             {
-                Serial.println("ACK received");
                 break;
             }
             // ACK expired
             if (i == MAX_ACK_CHECK_RETRIES)
             {
                 digitalWrite(RD, HIGH);
-                Serial.println("ERROR: ACK expired");
+                Serial.println("||ERROR: ACK expired||");
                 break;
             }
         }
         // Read in data
         int data = readPins(datapins, SIZE_DATAPINS);
-        Serial.println("pins are read");
         digitalWrite(RD, HIGH);
-        Serial.println("Readline is reset (low)");
-
         // Check for errors
         int err_value = digitalRead(ERR);
         if (err_value != HIGH)
         {
-            Serial.println("ERROR detected");
+            Serial.println("||ERROR detected||");
         }
-        Serial.println("Read finished \n");
         return data;
     }
 }
@@ -199,7 +187,6 @@ void printBusStatus(int status0_before, int status0_after, int status1_before, i
     Serial.println("STATUS BUS:");
     Serial.print("busCon0Status before: ");
     int statusGnd[8];
-    // Serial.print(status0_before);
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);

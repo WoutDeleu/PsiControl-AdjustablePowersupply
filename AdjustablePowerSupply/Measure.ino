@@ -55,6 +55,10 @@ void selectIchUsrc(bool connect)
     // Enables current measurement
     // Toggles b6, and only b6!
     measureStatusCopy = (connect) ? (measureStatusCopy | 0x40) : (measureStatusCopy & ~0x40);
+    if (connect)
+        Serial.println("##ENABLE CURRENT MEASUREMENT##");
+    else
+        Serial.println("##DISABLE CURRENT MEASUREMENT##");
     // b7 U(0) or I(1) source current
     // Controls RE40 -> To choose measurement from voltage_source or current_source
     measureStatusCopy &= ~0x80;
@@ -62,10 +66,11 @@ void selectIchUsrc(bool connect)
     {
         measureStatus = measureStatusCopy;
         int data[8];
-        Serial.print("Measure data: ");
+        Serial.print("((MEASURE REGISTER: ");
         fillArrayWithZeroes(data, 8);
         formatIntToBin(measureStatus, data, 8);
         printCompactArray(data, 8);
+        Serial.println(")) \n");
         writeData(Register::MEASURE, measureStatus, boardNumber);
         delay(RELAY_ON_SETTLING);
     }
