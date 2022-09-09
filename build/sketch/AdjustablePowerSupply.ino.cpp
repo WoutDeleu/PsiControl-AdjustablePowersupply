@@ -66,11 +66,11 @@ enum class Register
 };
 enum class MeasRange
 {
-  /// Do not strip down.
+  // Do not strip down.
   Bi10 = 1,
-  /// Strip down with a divider factor of 3
+  // Strip down with a divider factor of 3
   Bi30 = 3,
-  /// Strip down with a divider factor of 12
+  // Strip down with a divider factor of 12
   Bi120 = 12,
 };
 
@@ -121,44 +121,44 @@ const int ERR = 29;
 const byte AD0 = A14;
 const byte AD1 = A13;
 
-/// The maximum number of acknowledge check retries.
+// The maximum number of acknowledge check retries.
 const int MAX_ACK_CHECK_RETRIES = 100;
-/// The number of AIO channels for one board.
+// The number of AIO channels for one board.
 const int AIO_CHANNELS = 16;
-/// Time-out to switch relay on.
+// Time-out to switch relay on.
 static int RELAY_ON_SETTLING = 5;
-/// Time-out to switch relay off.
+// Time-out to switch relay off.
 static int RELAY_OFF_SETTLING = 1;
-/// The input impedance of the measure circuit. (1M2)
+// The input impedance of the measure circuit. (1M2)
 const double MEAS_INPUT_IMP = 1200000;
 
-/// 2 registers - each 1 byte - in total 2 bytes
-/// The data 0 status register, needed for u an i source
+// 2 registers - each 1 byte - in total 2 bytes
+// The data 0 status register, needed for u an i source
 int dacData0Status;
-/// The data 1 status register, needed for u an i source
+// The data 1 status register, needed for u an i source
 int dacData1Status;
 
-/// The source status register
+// The source status register
 int sourceStatus;
 
-/// 2 registers - each 1 byte - in total 2 bytes
-/// The bus cofnection 0 status register
+// 2 registers - each 1 byte - in total 2 bytes
+// The bus cofnection 0 status register
 int busCon0Status;
-/// The bus cofnection 1 status register
+// The bus cofnection 1 status register
 int busCon1Status;
 
-/// 2 registerf - each 1 byte - in total 2 bytes
-/// The ground connection 0 status register.
+// 2 registerf - each 1 byte - in total 2 bytes
+// The ground connection 0 status register.
 int gndCon0Status;
-/// The ground connection 1 status register.
+// The ground connection 1 status register.
 int gndCon1Status;
 
-/// The measure status register.
+// The measure status register.
 int measureStatus;
-/// The U/I bus status register.
+// The U/I bus status register.
 int rangeStatus = 0;
 
-/// Status of channels (connected to ground/connected to bus)
+// Status of channels (connected to ground/connected to bus)
 bool gndChannelStatus[16];
 bool busChannelStatus[16];
 
