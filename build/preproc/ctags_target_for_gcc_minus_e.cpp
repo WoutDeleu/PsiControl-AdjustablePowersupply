@@ -70,7 +70,7 @@ enum class MeasRange
 
 // BoardNr
 // Must be able to be changed in GUI
-int boardNumber;
+int boardNumber = 0;
 
 // Data pins
 // const int d0_pin = 2;

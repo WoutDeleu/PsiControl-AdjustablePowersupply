@@ -323,9 +323,9 @@ void setupStatus()
 // 'reset' arduino
 void setup()
 {
-  boardNumber = 0x00;
   Serial.begin(115200);
   Serial.println("##Setup Arduino##");
+  boardNumber = 0x00;
   setupPins();
   setupStatus();
 
