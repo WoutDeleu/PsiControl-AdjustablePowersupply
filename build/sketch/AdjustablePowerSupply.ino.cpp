@@ -540,7 +540,7 @@ int readData(Register chosenReg, int boardNumber)
 
 void printGNDStatus(int status0_before, int status0_after, int status1_before, int status1_after)
 {
-    Serial.println("((\nSTATUS GND UPDATE::");
+    Serial.print("((STATUS GND UPDATE::\n");
     Serial.print("gndCon0Status before: ");
     int statusGnd[8];
     // Serial.print(status0_before);
@@ -560,7 +560,7 @@ void printGNDStatus(int status0_before, int status0_after, int status1_before, i
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.println("\n))");
+    Serial.println("))");
 }
 void connectToGround(int channel, bool status)
 {
@@ -621,7 +621,7 @@ void connectToGround(int channel, bool status)
 
 void printBusStatus(int status0_before, int status0_after, int status1_before, int status1_after)
 {
-    Serial.println("((\nSTATUS BUS::");
+    Serial.println("((STATUS BUS:: ");
     Serial.print("busCon0Status before: ");
     int statusGnd[8];
     fillArrayWithZeroes(statusGnd, 8);
@@ -640,7 +640,7 @@ void printBusStatus(int status0_before, int status0_after, int status1_before, i
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.println("\n))");
+    Serial.println("))");
 }
 void connectToBus(int channel, bool status)
 {
@@ -698,7 +698,7 @@ void connectToBus(int channel, bool status)
 void printConnectVoltageStatus(int before, int after)
 {
     int data[8];
-    Serial.println("((\nSTATUS CONNECTING VOLTAGE SOURCE");
+    Serial.println("((STATUS CONNECTING VOLTAGE SOURCE:: ");
     Serial.print("Status voltage source before: ");
     fillArrayWithZeroes(data, 8);
     formatIntToBin(before, data, 8);
@@ -707,7 +707,7 @@ void printConnectVoltageStatus(int before, int after)
     fillArrayWithZeroes(data, 8);
     formatIntToBin(after, data, 8);
     printCompactArray(data, 8);
-    Serial.println("\n))");
+    Serial.println("))");
 }
 void connectVoltageSource(bool status)
 {
@@ -737,7 +737,7 @@ void connectVoltageSource(bool status)
 
 void printSetVoltageStatus(int status0_before, int status0_after, int status1_before, int status1_after)
 {
-    Serial.println("((\nSTATUS DATA SETVOLTAGE:");
+    Serial.println("((STATUS DATA SETVOLTAGE:: ");
     Serial.print("data0Status before: ");
     int statusGnd[8];
     fillArrayWithZeroes(statusGnd, 8);
@@ -756,7 +756,7 @@ void printSetVoltageStatus(int status0_before, int status0_after, int status1_be
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.println("\n))");
+    Serial.println("))");
 }
 void setVoltage(float voltage)
 {
