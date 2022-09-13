@@ -59,7 +59,7 @@ int readData(Register chosenReg, int boardNumber)
     // ACK initial state needs to be HIGH
     if (ack_value != HIGH)
     {
-        Serial.println("||ERROR: ACK was already low||");
+        Serial.println("||ERROR: ACK was already low ||");
     }
     else
     {
@@ -85,7 +85,7 @@ int readData(Register chosenReg, int boardNumber)
             if (i == MAX_ACK_CHECK_RETRIES)
             {
                 digitalWrite(RD, HIGH);
-                Serial.println("||ERROR: ACK expired||");
+                Serial.println("||ERROR: ACK expired ||");
                 break;
             }
         }
@@ -104,8 +104,8 @@ int readData(Register chosenReg, int boardNumber)
 
 void printGNDStatus(int status0_before, int status0_after, int status1_before, int status1_after)
 {
-    Serial.print("((STATUS GND UPDATE::\n");
-    Serial.print("gndCon0Status before: ");
+    Serial.print("((STATUS GND UPDATE:: ");
+    Serial.print("_ gndCon0Status before: ");
     int statusGnd[8];
     // Serial.print(status0_before);
     fillArrayWithZeroes(statusGnd, 8);
@@ -115,8 +115,7 @@ void printGNDStatus(int status0_before, int status0_after, int status1_before, i
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.println();
-    Serial.print("gndCon1Status before: ");
+    Serial.print("_ gndCon1Status before: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
@@ -135,9 +134,9 @@ void connectToGround(int channel, bool status)
         if (status != gndChannelStatus[channel - 1])
         {
             if (status)
-                Serial.println("##Connect channel " + String(channel) + " to the ground##");
+                Serial.println("##Connect channel " + String(channel) + " to the ground ##");
             else
-                Serial.println("##Disconnect channel " + String(channel) + " from the ground##");
+                Serial.println("##Disconnect channel " + String(channel) + " from the ground ##");
             gndChannelStatus[channel - 1] = status;
             // Copy to check for chanbges
             int gndCon0StatusCopy = gndCon0Status;
@@ -179,14 +178,14 @@ void connectToGround(int channel, bool status)
     }
     else
     {
-        Serial.println("||ERROR: Invalid channel selection. Fault in communication where wrong format/number is chosen as channel number..." + String(channel) + "is not a valid channel number... It most be in range of  [1...16]||");
+        Serial.println("||ERROR: Invalid channel selection. Fault in communication where wrong format/number is chosen as channel number..." + String(channel) + "is not a valid channel number... It most be in range of  [1...16] ||");
     }
 }
 
 void printBusStatus(int status0_before, int status0_after, int status1_before, int status1_after)
 {
-    Serial.println("((STATUS BUS:: ");
-    Serial.print("busCon0Status before: ");
+    Serial.print("((STATUS BUS:: ");
+    Serial.print("_ busCon0Status before: ");
     int statusGnd[8];
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_before, statusGnd, 8);
@@ -195,8 +194,7 @@ void printBusStatus(int status0_before, int status0_after, int status1_before, i
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.println();
-    Serial.print("busCon1Status before: ");
+    Serial.print("_ busCon1Status before: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);
@@ -262,8 +260,8 @@ void connectToBus(int channel, bool status)
 void printConnectVoltageStatus(int before, int after)
 {
     int data[8];
-    Serial.println("((STATUS CONNECTING VOLTAGE SOURCE:: ");
-    Serial.print("Status voltage source before: ");
+    Serial.print("((STATUS CONNECTING VOLTAGE SOURCE:: ");
+    Serial.print("_ Status voltage source before: ");
     fillArrayWithZeroes(data, 8);
     formatIntToBin(before, data, 8);
     printCompactArray(data, 8);
@@ -301,8 +299,8 @@ void connectVoltageSource(bool status)
 
 void printSetVoltageStatus(int status0_before, int status0_after, int status1_before, int status1_after)
 {
-    Serial.println("((STATUS DATA SETVOLTAGE:: ");
-    Serial.print("data0Status before: ");
+    Serial.print("((STATUS DATA SETVOLTAGE:: ");
+    Serial.print("_ data0Status before: ");
     int statusGnd[8];
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_before, statusGnd, 8);
@@ -311,8 +309,7 @@ void printSetVoltageStatus(int status0_before, int status0_after, int status1_be
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status0_after, statusGnd, 8);
     printCompactArray(statusGnd, 8);
-    Serial.println();
-    Serial.print("data1Status before: ");
+    Serial.print("_ data1Status before: ");
     fillArrayWithZeroes(statusGnd, 8);
     formatIntToBin(status1_before, statusGnd, 8);
     printCompactArray(statusGnd, 8);

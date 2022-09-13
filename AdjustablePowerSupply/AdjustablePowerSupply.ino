@@ -168,15 +168,15 @@ CmdMessenger cmdMessenger = CmdMessenger(Serial, field_separator, command_separa
 // Defining possible commands
 enum class CommandCalls
 {
-  PUT_VOLTAGE = 2,
-  CONNECT_TO_GROUND = 3,
-  CONNECT_TO_BUS = 4,
-  MEASURE_VOLTAGE = 5,
-  MEASURE_CURRENT = 6,
-  CHANGE_BOARDNUMBER = 7,
-  GET_BOARDNUMBER = 8,
-  DISCONNECT_VOLTAGE = 9,
-  RESET = 10
+  PUT_VOLTAGE = 1,
+  CONNECT_TO_GROUND = 2,
+  CONNECT_TO_BUS = 3,
+  MEASURE_VOLTAGE = 4,
+  MEASURE_CURRENT = 5,
+  CHANGE_BOARDNUMBER = 6,
+  GET_BOARDNUMBER = 7,
+  DISCONNECT_VOLTAGE = 8,
+  RESET = 9
 };
 // Linking command id's to correct functions
 void attachCommandCallbacks()
