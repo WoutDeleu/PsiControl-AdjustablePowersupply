@@ -168,6 +168,7 @@ CmdMessenger cmdMessenger = CmdMessenger(Serial, field_separator, command_separa
 // Defining possible commands
 enum class CommandCalls
 {
+  PING_CHECK = 0,
   PUT_VOLTAGE = 1,
   CONNECT_TO_GROUND = 2,
   CONNECT_TO_BUS = 3,
@@ -182,6 +183,7 @@ enum class CommandCalls
 void attachCommandCallbacks()
 {
   cmdMessenger.attach(onUnknownCommand);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::PING_CHECK), ping);
   cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::DISCONNECT_VOLTAGE), disconnectVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), connectToGroundSerial);
@@ -261,6 +263,10 @@ void measureCurrentSerial()
 void disconnectVoltageSerial()
 {
   connectVoltageSource(false);
+}
+void ping()
+{
+  Serial.println("PING_PING_PING");
 }
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 
