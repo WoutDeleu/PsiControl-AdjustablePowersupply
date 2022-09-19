@@ -353,7 +353,7 @@ void disconnectVoltageSerial()
 }
 void ping()
 {
-  Serial.println("_8888_");
+  Serial.println("PING_PING_PING");
 }
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 

@@ -274,9 +274,9 @@ void printConnectVoltageStatus(int before, int after)
 void connectVoltageSource(bool status)
 {
     if (status)
-        Serial.println("##Connect voltage source##");
+        Serial.println("##Connect Voltage source##");
     else
-        Serial.println("##Disconnect voltage source##");
+        Serial.println("##Disconnect Voltage source##");
     int switchTime = status ? RELAY_ON_SETTLING : RELAY_OFF_SETTLING;
     int sourceStatusCopy = sourceStatus;
     if (status)
@@ -321,7 +321,7 @@ void printSetVoltageStatus(int status0_before, int status0_after, int status1_be
 }
 void setVoltage(float voltage)
 {
-    Serial.println("##Set voltage to " + String(voltage) + "##");
+    Serial.println("##Set Voltage to " + String(voltage) + "##");
     int status0_before = dacData0Status;
     int status1_before = dacData1Status;
     // After the DAC the voltage is multiplied with 3
