@@ -718,9 +718,9 @@ void printConnectVoltageStatus(int before, int after)
 void connectVoltageSource(bool status)
 {
     if (status)
-        Serial.println("##Connect voltage source##");
+        Serial.println("##Connect Voltage source##");
     else
-        Serial.println("##Disconnect voltage source##");
+        Serial.println("##Disconnect Voltage source##");
     int switchTime = status ? RELAY_ON_SETTLING : RELAY_OFF_SETTLING;
     int sourceStatusCopy = sourceStatus;
     if (status)
@@ -765,7 +765,7 @@ void printSetVoltageStatus(int status0_before, int status0_after, int status1_be
 }
 void setVoltage(float voltage)
 {
-    Serial.println("##Set voltage to " + String(voltage) + "##");
+    Serial.println("##Set Voltage to " + String(voltage) + "##");
     int status0_before = dacData0Status;
     int status1_before = dacData1Status;
     // After the DAC the voltage is multiplied with 3
@@ -963,9 +963,9 @@ void selectIchUsrc(bool connect)
     // Toggles b6, and only b6!
     measureStatusCopy = (connect) ? (measureStatusCopy | 0x40) : (measureStatusCopy & ~0x40);
     if (connect)
-        Serial.println("##ENABLE CURRENT MEASUREMENT##");
+        Serial.println("##Enable current measurement##");
     else
-        Serial.println("##DISABLE CURRENT MEASUREMENT##");
+        Serial.println("##Disable current measurement##");
     // b7 U(0) or I(1) source current
     // Controls RE40 -> To choose measurement from voltage_source or current_source
     measureStatusCopy &= ~0x80;
