@@ -56,9 +56,9 @@ void selectIchUsrc(bool connect)
     // Toggles b6, and only b6!
     measureStatusCopy = (connect) ? (measureStatusCopy | 0x40) : (measureStatusCopy & ~0x40);
     if (connect)
-        Serial.println("##ENABLE CURRENT MEASUREMENT##");
+        Serial.println("##Enable current measurement##");
     else
-        Serial.println("##DISABLE CURRENT MEASUREMENT##");
+        Serial.println("##Disable current measurement##");
     // b7 U(0) or I(1) source current
     // Controls RE40 -> To choose measurement from voltage_source or current_source
     measureStatusCopy &= ~0x80;
