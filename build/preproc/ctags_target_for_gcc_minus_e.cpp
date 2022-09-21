@@ -280,6 +280,7 @@ void permanentWriteSerial()
 }
 void getPreviousState()
 {
+  Serial.println("##Retrieving previous state##");
   byte eeprom_value;
   String data;
   eeprom_value = EEPROM.read(0);
@@ -295,6 +296,7 @@ void getPreviousState()
   else
   {
     data = "[0::0::0]";
+    Serial.println(data);
   }
 }
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
