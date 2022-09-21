@@ -174,7 +174,8 @@ enum class CommandCalls
   CHANGE_BOARDNUMBER = 6,
   GET_BOARDNUMBER = 7,
   DISCONNECT_VOLTAGE = 8,
-  RESET = 9
+  RESET = 9,
+  PERMANENT_WRITE = 10
 };
 // Linking command id's to correct functions
 void attachCommandCallbacks()
@@ -190,6 +191,7 @@ void attachCommandCallbacks()
   cmdMessenger.attach(static_cast<int>(CommandCalls::CHANGE_BOARDNUMBER), setBoardNumber);
   cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), getBoardNumber);
   cmdMessenger.attach(static_cast<int>(CommandCalls::RESET), setup);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::PERMANENT_WRITE), permanentWriteSerial);
 }
 // ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
 
@@ -265,6 +267,15 @@ void ping()
 {
   Serial.println("PING_PING_PING");
 }
+void permanentWriteSerial()
+{
+  bool permanent = cmdMessenger.readBoolArg();
+  permanentWrite(permanent);
+  if (permanent)
+    Serial.println("##Enabled permanent storage##");
+  else
+    Serial.println("##Disabled permanent storage##");
+}
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 
 // A test function which executes some basic funcionallities of the program
@@ -323,7 +334,9 @@ void setupStatus()
   // settling time
   delay(RELAY_OFF_SETTLING);
 }
+
 // 'reset' arduino
+byte eeprom_value;
 void setup()
 {
   Serial.begin(115200);
@@ -341,6 +354,16 @@ void setup()
   {
     busChannelStatus[i] = false;
     gndChannelStatus[i] = false;
+  }
+  if (EEPROM.read(0) == 1)
+  {
+    connectToBus(1, true);
+    connectVoltageSource(true);
+    eeprom_value = EEPROM.read(1);
+    boardNumber = eeprom_value;
+    eeprom_value = EEPROM.read(2);
+    currentVoltage = eeprom_value;
+    setVoltage(currentVoltage);
   }
   Serial.println("##Setup Complete##");
 }
@@ -754,7 +777,13 @@ double measureCurrentUsource()
 // Store 'permanent' variables
 void permanentWrite(bool permanent)
 {
-    EEPROM.update(0, permanent);
+    byte eeprom_value;
+    if (permanent)
+        eeprom_value = 1;
+    else
+        eeprom_value = 0;
+
+    EEPROM.update(0, eeprom_value);
     if (permanent)
     {
         EEPROM.update(1, boardNumber);

@@ -281,8 +281,10 @@ void permanentWriteSerial()
 {
   bool permanent = cmdMessenger.readBoolArg();
   permanentWrite(permanent);
-  if(permanent) Serial.println("##Enabled permanent storage##");
-  else Serial.println("##Disabled permanent storage##");
+  if (permanent)
+    Serial.println("##Enabled permanent storage##");
+  else
+    Serial.println("##Disabled permanent storage##");
 }
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 

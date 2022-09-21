@@ -186,38 +186,41 @@ enum class CommandCalls
   CHANGE_BOARDNUMBER = 6,
   GET_BOARDNUMBER = 7,
   DISCONNECT_VOLTAGE = 8,
-  RESET = 9
+  RESET = 9,
+  PERMANENT_WRITE = 10
 };
 // Linking command id's to correct functions
-#line 190 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 191 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void attachCommandCallbacks();
-#line 207 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 209 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void onUnknownCommand();
-#line 211 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 213 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void setVoltageSerial();
-#line 223 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 225 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void connectToGroundSerial();
-#line 235 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 237 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void connectToBusSerial();
-#line 247 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 249 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void setBoardNumber();
-#line 255 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 257 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void getBoardNumber();
-#line 259 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 261 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void measureVoltageSerial();
-#line 265 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 267 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void measureCurrentSerial();
-#line 270 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 272 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void disconnectVoltageSerial();
-#line 274 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 276 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void ping();
-#line 281 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 280 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+void permanentWriteSerial();
+#line 292 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void testFullFunctionallity();
-#line 306 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 317 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void setupStatus();
-#line 337 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 350 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void setup();
-#line 358 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 381 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void loop();
 #line 6 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\BoardFunctions.ino"
 void writeData(Register chosenReg, int data, int boardNumber);
@@ -275,7 +278,7 @@ void configDataPins(int io);
 void writePins(const int pin[], int pin_size, int inputData);
 #line 65 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\PinController.ino"
 int readPins(const int pin[], int pin_size);
-#line 190 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
+#line 191 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 void attachCommandCallbacks()
 {
   cmdMessenger.attach(onUnknownCommand);
@@ -289,6 +292,7 @@ void attachCommandCallbacks()
   cmdMessenger.attach(static_cast<int>(CommandCalls::CHANGE_BOARDNUMBER), setBoardNumber);
   cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), getBoardNumber);
   cmdMessenger.attach(static_cast<int>(CommandCalls::RESET), setup);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::PERMANENT_WRITE), permanentWriteSerial);
 }
 // ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
 
@@ -364,6 +368,15 @@ void ping()
 {
   Serial.println("PING_PING_PING");
 }
+void permanentWriteSerial()
+{
+  bool permanent = cmdMessenger.readBoolArg();
+  permanentWrite(permanent);
+  if (permanent)
+    Serial.println("##Enabled permanent storage##");
+  else
+    Serial.println("##Disabled permanent storage##");
+}
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 
 // A test function which executes some basic funcionallities of the program
@@ -422,7 +435,9 @@ void setupStatus()
   // settling time
   delay(RELAY_OFF_SETTLING);
 }
+
 // 'reset' arduino
+byte eeprom_value;
 void setup()
 {
   Serial.begin(115200);
@@ -440,6 +455,16 @@ void setup()
   {
     busChannelStatus[i] = false;
     gndChannelStatus[i] = false;
+  }
+  if (EEPROM.read(REGISTER_PERMANENT) == 1)
+  {
+    connectToBus(1, true);
+    connectVoltageSource(true);
+    eeprom_value = EEPROM.read(REGISTER_BOARDNR);
+    boardNumber = eeprom_value;
+    eeprom_value = EEPROM.read(REGISTER_VOLTAGE);
+    currentVoltage = eeprom_value;
+    setVoltage(currentVoltage);
   }
   Serial.println("##Setup Complete##");
 }
@@ -724,7 +749,7 @@ void printConnectVoltageStatus(int before, int after)
     printCompactArray(data, 8);
     Serial.println("))");
 }
-void connectVoltageSource(bool status) 
+void connectVoltageSource(bool status)
 {
     if (status)
         Serial.println("##Connect Voltage source##");
@@ -852,7 +877,13 @@ double measureCurrentUsource()
 // Store 'permanent' variables
 void permanentWrite(bool permanent)
 {
-    EEPROM.update(REGISTER_PERMANENT, permanent);
+    byte eeprom_value;
+    if (permanent)
+        eeprom_value = 1;
+    else
+        eeprom_value = 0;
+    
+    EEPROM.update(REGISTER_PERMANENT, eeprom_value);
     if (permanent)
     {
         EEPROM.update(REGISTER_BOARDNR, boardNumber);
