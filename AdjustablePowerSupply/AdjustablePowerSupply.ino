@@ -185,7 +185,8 @@ enum class CommandCalls
   GET_BOARDNUMBER = 7,
   DISCONNECT_VOLTAGE = 8,
   RESET = 9,
-  PERMANENT_WRITE = 10
+  PERMANENT_WRITE = 10,
+  GET_PEVIOUS_STATE = 11
 };
 // Linking command id's to correct functions
 void attachCommandCallbacks()
@@ -202,13 +203,14 @@ void attachCommandCallbacks()
   cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), getBoardNumber);
   cmdMessenger.attach(static_cast<int>(CommandCalls::RESET), setup);
   cmdMessenger.attach(static_cast<int>(CommandCalls::PERMANENT_WRITE), permanentWriteSerial);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::GET_PEVIOUS_STATE), getPreviousState);
 }
 // ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
 
 // ----------------------------------- C A L L B A C K S  M E T H O D S -------------------------------------
 void onUnknownCommand()
 {
-  Serial.println("||Invalid command received, there must be a fault in the communication... The function index received does not match an index stored in the program... Indicating a fault in the communication (retreving data from serial port, ...) ||");
+  Serial.println("||Invalid command received by Arduino, there must be a fault in the communication... The function index received does not match an index stored in the program... Indicating a fault in the communication (retreving data from serial port, ...) ||");
 }
 void setVoltageSerial()
 {
@@ -285,6 +287,24 @@ void permanentWriteSerial()
     Serial.println("##Enabled permanent storage##");
   else
     Serial.println("##Disabled permanent storage##");
+}
+void getPreviousState()
+{
+  byte eeprom_value;
+  string data;
+  eeprom_value = EEPROM.read(REGISTER_PERMANENT);
+  if (eeprom_value == 1)
+  {
+    eeprom_value = EEPROM.read(REGISTER_VOLTAGE);
+    data = "[1::" + eeprom_value;
+    eeprom_value = EEPROM.read(REGISTER_BOARDNR);
+    data += "::" + eeprom_value + "]";
+    Serial.println(data);
+  }
+  else
+  {
+    data = "[0::0::0]";
+  }
 }
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 
