@@ -291,14 +291,15 @@ void permanentWriteSerial()
 void getPreviousState()
 {
   byte eeprom_value;
-  string data;
+  String data;
   eeprom_value = EEPROM.read(REGISTER_PERMANENT);
   if (eeprom_value == 1)
   {
     eeprom_value = EEPROM.read(REGISTER_VOLTAGE);
     data = "[1::" + eeprom_value;
     eeprom_value = EEPROM.read(REGISTER_BOARDNR);
-    data += "::" + eeprom_value + "]";
+    data += "::" + eeprom_value;
+    data += "]";
     Serial.println(data);
   }
   else
