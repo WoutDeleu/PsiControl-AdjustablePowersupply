@@ -11,4 +11,5 @@ c:\Users\wdl\OneDrive\ -\ Picanol\ Group\Documents\PsiControl_RegelbareVoeding_V
  C:\Users\wdl\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.5\cores\arduino/USBAPI.h \
  C:\Users\wdl\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.5\cores\arduino/Arduino.h \
  C:\Users\wdl\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.5\variants\mega/pins_arduino.h \
- C:\Users\wdl\Downloads\arduino-1.8.19-windows\arduino-1.8.19\libraries\CmdMessenger/CmdMessenger.h
+ C:\Users\wdl\Downloads\arduino-1.8.19-windows\arduino-1.8.19\libraries\CmdMessenger/CmdMessenger.h \
+ C:\Users\wdl\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.5\libraries\EEPROM\src/EEPROM.h

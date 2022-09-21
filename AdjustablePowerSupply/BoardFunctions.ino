@@ -276,7 +276,10 @@ void connectVoltageSource(bool status)
     if (status)
         Serial.println("##Connect Voltage source##");
     else
+    {
+        currentVoltage = 0;
         Serial.println("##Disconnect Voltage source##");
+    }
     int switchTime = status ? RELAY_ON_SETTLING : RELAY_OFF_SETTLING;
     int sourceStatusCopy = sourceStatus;
     if (status)
@@ -322,6 +325,7 @@ void printSetVoltageStatus(int status0_before, int status0_after, int status1_be
 void setVoltage(float voltage)
 {
     Serial.println("##Set Voltage to " + String(voltage) + "##");
+    currentVoltage = voltage;
     int status0_before = dacData0Status;
     int status1_before = dacData1Status;
     // After the DAC the voltage is multiplied with 3
@@ -390,4 +394,21 @@ double measureCurrentUsource()
     // disconnect current channel
     selectIchUsrc(false);
     return current_measured;
+}
+
+// Store 'permanent' variables
+void permanentWrite(bool permanent)
+{
+    byte eeprom_value;
+    if (permanent)
+        eeprom_value = 1;
+    else
+        eeprom_value = 0;
+    
+    EEPROM.update(REGISTER_PERMANENT, eeprom_value);
+    if (permanent)
+    {
+        EEPROM.update(REGISTER_BOARDNR, boardNumber);
+        EEPROM.update(REGISTER_VOLTAGE, currentVoltage);
+    }
 }

@@ -4,6 +4,10 @@
 //    Status: ## .... ##
 //    Registers: (( .... ))
 
+#include <CmdMessenger.h>
+#include <string.h>
+#include <EEPROM.h>
+
 #define SIZE_ADDRESSPINS 8
 #define SIZE_DATAPINS 8
 #define SIZE_CARDPINS 4
@@ -11,9 +15,9 @@
 #define INPUT_SELECTOR 0
 #define OUTPUT_SELECTOR 1
 
-#include <CmdMessenger.h>
-#include <string.h>
-// #include <RemoteDebugger.h>
+#define REGISTER_PERMANENT 0
+#define REGISTER_BOARDNR 1
+#define REGISTER_VOLTAGE 2
 
 enum class Register
 {
@@ -156,6 +160,9 @@ int measureStatus;
 // The U/I bus status register.
 int rangeStatus = 0;
 
+// Current set Voltage
+float currentVoltage = 0;
+
 // Status of channels (connected to ground/connected to bus)
 bool gndChannelStatus[16];
 bool busChannelStatus[16];
@@ -177,7 +184,8 @@ enum class CommandCalls
   CHANGE_BOARDNUMBER = 6,
   GET_BOARDNUMBER = 7,
   DISCONNECT_VOLTAGE = 8,
-  RESET = 9
+  RESET = 9,
+  PERMANENT_WRITE = 10
 };
 // Linking command id's to correct functions
 void attachCommandCallbacks()
@@ -193,6 +201,7 @@ void attachCommandCallbacks()
   cmdMessenger.attach(static_cast<int>(CommandCalls::CHANGE_BOARDNUMBER), setBoardNumber);
   cmdMessenger.attach(static_cast<int>(CommandCalls::GET_BOARDNUMBER), getBoardNumber);
   cmdMessenger.attach(static_cast<int>(CommandCalls::RESET), setup);
+  cmdMessenger.attach(static_cast<int>(CommandCalls::PERMANENT_WRITE), permanentWriteSerial);
 }
 // ------------------ E N D   D E F I N E   C A L L B A C K S +   C M D   M E S S E N G E R------------------
 
@@ -268,6 +277,13 @@ void ping()
 {
   Serial.println("PING_PING_PING");
 }
+void permanentWriteSerial()
+{
+  bool permanent = cmdMessenger.readBoolArg();
+  permanentWrite(permanent);
+  if(permanent) Serial.println("##Enabled permanent storage##");
+  else Serial.println("##Disabled permanent storage##");
+}
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
 
 // A test function which executes some basic funcionallities of the program
@@ -326,7 +342,9 @@ void setupStatus()
   // settling time
   delay(RELAY_OFF_SETTLING);
 }
+
 // 'reset' arduino
+byte eeprom_value;
 void setup()
 {
   Serial.begin(115200);
@@ -344,6 +362,16 @@ void setup()
   {
     busChannelStatus[i] = false;
     gndChannelStatus[i] = false;
+  }
+  if (EEPROM.read(REGISTER_PERMANENT) == 1)
+  {
+    connectToBus(1, true);
+    connectVoltageSource(true);
+    eeprom_value = EEPROM.read(REGISTER_BOARDNR);
+    boardNumber = eeprom_value;
+    eeprom_value = EEPROM.read(REGISTER_VOLTAGE);
+    currentVoltage = eeprom_value;
+    setVoltage(currentVoltage);
   }
   Serial.println("##Setup Complete##");
 }

@@ -16,6 +16,11 @@
   },
   {
     "Sourcefile": "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\build\\sketch\\AdjustablePowerSupply.ino.cpp",
+    "Include": "EEPROM.h",
+    "Includepath": "C:\\Users\\wdl\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.5\\libraries\\EEPROM\\src"
+  },
+  {
+    "Sourcefile": "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\build\\sketch\\AdjustablePowerSupply.ino.cpp",
     "Include": "",
     "Includepath": null
   },

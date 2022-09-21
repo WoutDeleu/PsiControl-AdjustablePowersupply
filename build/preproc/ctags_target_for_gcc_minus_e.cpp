@@ -4,13 +4,11 @@
 //    ERROR: || .... ||
 //    Status: ## .... ##
 //    Registers: (( .... ))
-# 14 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
-# 15 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino" 2
-# 16 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino" 2
 
-# 16 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
-// #include <RemoteDebugger.h>
-
+# 8 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino" 2
+# 9 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino" 2
+# 10 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino" 2
+# 22 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\AdjustablePowerSupply.ino"
 enum class Register
 {
   // 00H
@@ -151,6 +149,9 @@ int gndCon1Status;
 int measureStatus;
 // The U/I bus status register.
 int rangeStatus = 0;
+
+// Current set Voltage
+float currentVoltage = 0;
 
 // Status of channels (connected to ground/connected to bus)
 bool gndChannelStatus[16];
@@ -630,7 +631,10 @@ void connectVoltageSource(bool status)
     if (status)
         Serial.println("##Connect Voltage source##");
     else
+    {
+        currentVoltage = 0;
         Serial.println("##Disconnect Voltage source##");
+    }
     int switchTime = status ? RELAY_ON_SETTLING : RELAY_OFF_SETTLING;
     int sourceStatusCopy = sourceStatus;
     if (status)
@@ -676,6 +680,7 @@ void printSetVoltageStatus(int status0_before, int status0_after, int status1_be
 void setVoltage(float voltage)
 {
     Serial.println("##Set Voltage to " + String(voltage) + "##");
+    currentVoltage = voltage;
     int status0_before = dacData0Status;
     int status1_before = dacData1Status;
     // After the DAC the voltage is multiplied with 3
@@ -744,6 +749,17 @@ double measureCurrentUsource()
     // disconnect current channel
     selectIchUsrc(false);
     return current_measured;
+}
+
+// Store 'permanent' variables
+void permanentWrite(bool permanent)
+{
+    EEPROM.update(0, permanent);
+    if (permanent)
+    {
+        EEPROM.update(1, boardNumber);
+        EEPROM.update(2, currentVoltage);
+    }
 }
 # 1 "c:\\Users\\wdl\\OneDrive - Picanol Group\\Documents\\PsiControl_RegelbareVoeding_V3\\AdjustablePowerSupply\\GlobalFunctions.ino"
 int formatBinaryToInt(int arr[], int arrSize)
