@@ -165,7 +165,6 @@ CmdMessenger cmdMessenger = CmdMessenger(Serial, field_separator, command_separa
 // Defining possible commands
 enum class CommandCalls
 {
-  PING_CHECK = 0,
   PUT_VOLTAGE = 1,
   CONNECT_TO_GROUND = 2,
   CONNECT_TO_BUS = 3,
@@ -182,7 +181,6 @@ enum class CommandCalls
 void attachCommandCallbacks()
 {
   cmdMessenger.attach(onUnknownCommand);
-  cmdMessenger.attach(static_cast<int>(CommandCalls::PING_CHECK), ping);
   cmdMessenger.attach(static_cast<int>(CommandCalls::PUT_VOLTAGE), setVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::DISCONNECT_VOLTAGE), disconnectVoltageSerial);
   cmdMessenger.attach(static_cast<int>(CommandCalls::CONNECT_TO_GROUND), connectToGroundSerial);
@@ -265,10 +263,6 @@ void disconnectVoltageSerial()
 {
   connectVoltageSource(false);
 }
-void ping()
-{
-  Serial.println("PING_PING_PING");
-}
 void permanentWriteSerial()
 {
   bool permanent = cmdMessenger.readBoolArg();
@@ -280,23 +274,15 @@ void permanentWriteSerial()
 }
 void getPreviousState()
 {
-  Serial.println("##Retrieving previous state##");
+  Serial.println("##Trying to retriev previous state##");
   byte eeprom_value;
-  String data;
+
   eeprom_value = EEPROM.read(0);
-  if (eeprom_value == 1)
+  Serial.println("Permanent: [" + String(eeprom_value) + "] ");
+  if (eeprom_value != 0)
   {
-    eeprom_value = EEPROM.read(2);
-    data = "[1::" + eeprom_value;
+    Serial.println("Voltage: [" + String(currentVoltage) + "] ");
     eeprom_value = EEPROM.read(1);
-    data += "::" + eeprom_value;
-    data += "]";
-    Serial.println(data);
-  }
-  else
-  {
-    data = "[0::0::0]";
-    Serial.println(data);
   }
 }
 // -------------------------------- E N D  C A L L B A C K  M E T H O D S ----------------------------------
@@ -316,6 +302,7 @@ void testFullFunctionallity()
   Serial.println();
   delay(5000);
 
+  connectToBus(1, false);
   setVoltage(0);
   Serial.println("***********");
   measured = measureCurrentUsource();
@@ -359,7 +346,6 @@ void setupStatus()
 }
 
 // 'reset' arduino
-byte eeprom_value;
 void setup()
 {
   Serial.begin(115200);
@@ -378,17 +364,35 @@ void setup()
     busChannelStatus[i] = false;
     gndChannelStatus[i] = false;
   }
-  if (EEPROM.read(0) == 1)
+  Serial.println("##Setup Complete##");
+  delay(50);
+  restoreSession();
+}
+// Get previous state out off the EEPROM memory
+void restoreSession()
+{
+  byte eeprom_value;
+  eeprom_value = EEPROM.read(0);
+  delay(50);
+  if (eeprom_value == 1)
   {
+    Serial.println("##Restoring session##");
     connectToBus(1, true);
     connectVoltageSource(true);
     eeprom_value = EEPROM.read(1);
+    delay(100);
     boardNumber = eeprom_value;
+    Serial.println("##Set boardNumber to" + String(boardNumber) + "##");
     eeprom_value = EEPROM.read(2);
+    delay(100);
     currentVoltage = eeprom_value;
     setVoltage(currentVoltage);
+    Serial.println("##Finished Restoring session##");
   }
-  Serial.println("##Setup Complete##");
+  else
+  {
+    Serial.println("##Not Restoring session##");
+  }
 }
 // In the loop, the cmdMessenger keeps checking for new input commands
 void loop()
