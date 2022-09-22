@@ -284,7 +284,7 @@ void permanentWriteSerial()
 }
 void getPreviousState()
 {
-  Serial.println("##Trying to retriev previous state##");
+  Serial.println("##Trying to retrieve previous state##");
   byte eeprom_value;
 
   eeprom_value = EEPROM.read(REGISTER_PERMANENT);
@@ -392,7 +392,7 @@ void restoreSession()
     eeprom_value = EEPROM.read(REGISTER_BOARDNR);
     delay(100);
     boardNumber = eeprom_value;
-    Serial.println("##Set boardNumber to" + String(boardNumber) + "##");
+    Serial.println("##Set boardNumber to " + String(boardNumber) + "##");
     eeprom_value = EEPROM.read(REGISTER_VOLTAGE);
     delay(100);
     currentVoltage = eeprom_value;
