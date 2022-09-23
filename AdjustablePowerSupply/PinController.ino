@@ -1,11 +1,5 @@
 void setupPins()
 {
-  //  datapins are controlled by the arduino
-  for (int i = 0; i < 8; i++)
-  {
-    pinMode(addresspins[i], OUTPUT);
-  }
-
   // Decision for R/W/RESET controlled by the arduino
   pinMode(WR, OUTPUT);
   pinMode(RD, OUTPUT);
@@ -19,6 +13,11 @@ void setupPins()
   pinMode(AD0, INPUT);
   pinMode(AD1, INPUT);
 
+  //  datapins are controlled by the arduino
+  for (int i = 0; i < 8; i++)
+  {
+    pinMode(addresspins[i], OUTPUT);
+  }
   // Address of the card, can be used to validate card
   for (int i = 0; i < 4; i++)
   {
