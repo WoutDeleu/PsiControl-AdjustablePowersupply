@@ -22,6 +22,3 @@ We welcome contributions, suggestions, and feedback from the community and the P
 
 🚀 **Enjoy Precise Power Supply Control!**
 This project empowers you with the ability to control your power supply precisely using USB-C technology. Unlock its potential and use it for your specific needs.
-
-**Short Description for GitHub**:
-"USB-C Controlled Power Supply with Arduino - Transform your Ts_AIO-5 card into a precise power supply using Arduino Mega." ⚡🔌👨‍💻
